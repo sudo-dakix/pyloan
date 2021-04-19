@@ -1,0 +1,18 @@
+Metadata-Version: 2.1
+Name: pyloan
+Version: 0.0.1
+Summary: A small package for (mortgage) loan calculations
+Home-page: https://github.com/sudo-dakix/pyloan
+Author: Da.Ki.X
+Author-email: dakix@protonmail.com
+License: UNKNOWN
+Project-URL: Bug Tracker, https://github.com/sudo-dakix/pyloan/issues
+Description: # PyLoan Package
+        
+        This is a simple (mortgage) loan calculation tool.
+Platform: UNKNOWN
+Classifier: Programming Language :: Python :: 3
+Classifier: License :: OSI Approved :: MIT License
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.6
+Description-Content-Type: text/markdown
