@@ -45,13 +45,12 @@ Now, retrieve repayment schedule using `loan.get_payment_schedule()`. This outpu
 * total_principal_amount: total amount of regular and ah-hoc principal paid.
 * loan_balance_amount: amount of loan balance as at end of payment date.
 
-To define the `loan` within a panda's DataFram, use `from_records` method. For example, `loan_df=pd.DataFrame.from_records(loan.get_payment_schedule(),columns=Payment._fields)`. This will generate a familiar panda's DataFrame with named tuple elements as columns.
+To define the `loan` within a panda's DataFram, use `from_records` method. For example, `loan_df=pd.DataFrame.from_records(loan.get_payment_schedule(),columns=pyloan.Payment._fields)`. This will generate a familiar panda's DataFrame with named tuple elements as columns.
 
 ## To-Do
 
-* Add 30/360 method of interest rate compounding. Currently compounding under 30E/360 method.
 * Add Actual method for interest rate compounding.
 * Add special principal repayments.
 * Add loan summary details.
 * Integrate end_date.
-* Extend documentation documentation.
+* Extend documentation.
