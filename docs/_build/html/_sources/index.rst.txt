@@ -13,7 +13,7 @@ Features
 ========
 PyLoan can perform simple mortgage/loan calculations:
 
-* Amortize s loan based on the specified payment schedule.
+* Amortize a loan based on the specified payment schedule.
 * Consider ad-hoc or periodic special principal repayments during loan amortization schedule (under development).
 * Calculate interest payments using either 30/360 methods or actual methods.
 
