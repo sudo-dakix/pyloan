@@ -49,8 +49,6 @@ Defining a loan with PyLoan is very simple. Begin by importing the PyLoan module
 
  from pyloan import pyloan
 
-
-
 Next define a loan::
 
   loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2021-06-15',payment_amount=888.33)
@@ -81,3 +79,6 @@ This defined a named tuple with the following fields:
     df=pd.DataFrame.from_records(loan.get_payment_schedule(),columns=pyloan.Payment._fields)
 
    This will generate a familiar DataFrame with named tuple fields as columns.
+
+   .. image:: _static/pandas_df_output.png
+      :alt: Pandas DataFrame output of the payment schedule

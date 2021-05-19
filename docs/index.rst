@@ -13,7 +13,7 @@ Report bugs via the bug tracker on `GitHub <https://github.com/sudo-dakix/pyloan
 =======
 License
 =======
-
+PyLoan is licensed under the `MIT License <https://github.com/sudo-dakix/pyloan/blob/master/LICENSE>`__.
 
 .. toctree::
    :maxdepth: 3
