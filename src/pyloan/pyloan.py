@@ -7,7 +7,7 @@ from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 
 Payment=namedtuple('Payment',['payment_id','date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
-
+Loan_Summary=namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_interest_amount'])
 
 # To-do:
 ### Actual/360
@@ -100,3 +100,15 @@ class Loan(object):
             payment_schedule.append(payment)
 
         return payment_schedule
+
+    ef get_loan_summary(self):
+        payment_schedule=self.get_payment_schedule()
+        total_payment_amount=0
+        total_interest_amount=0
+        for payment in payment_schedule:
+            total_payment_amount +=payment.payment_amount
+            total_interest_amount +=payment.interest_amount
+
+        loan_summary=Loan_Summary(loan_amount=self.loan_amount,total_payment_amount=total_payment_amount,total_interest_amount=total_interest_amount)
+
+        return loan_summary
