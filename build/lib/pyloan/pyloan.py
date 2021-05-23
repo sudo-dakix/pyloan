@@ -7,7 +7,7 @@ from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 
 Payment=namedtuple('Payment',['payment_id','date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
-
+Loan_Summary=namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_interest_amount'])
 
 # To-do:
 ### Actual/360
@@ -16,7 +16,7 @@ Payment=namedtuple('Payment',['payment_id','date','payment_amount','interest_amo
 
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,payment_amount,start_date,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12):
+    def __init__(self,loan_amount,interest_rate,loan_term,payment_amount,start_date,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12,compounding_method='30E/360'):
         self.loan_amount=Decimal(str(loan_amount))
         self.interest_rate=Decimal(str(interest_rate/100)).quantize(Decimal(str(0.0001)))
         self.laon_term=loan_term
@@ -27,7 +27,7 @@ class Loan(object):
         self.end_date=end_date
         self.interest_only_period=interest_only_period
         self.annual_payments=annual_payments
-
+        self.compounding_method=compounding_method
         self.no_of_payments=self.laon_term * self.annual_payments
         self.delta_dt=Decimal(str(12/self.annual_payments))
         #self.compounding_factor=Decimal(str(1/self.annual_payments))
@@ -87,7 +87,7 @@ class Loan(object):
                 eom_day=cal.monthrange(date.year,date.month)[1]
                 date=date.replace(day=eom_day)#dt.datetime(date.year,date.month,eom_day)
 
-            compounding_factor=Decimal(str(self._get_day_count(payment_schedule[i-1].date,date,'30E/360',eom=self.payment_end_of_month)))
+            compounding_factor=Decimal(str(self._get_day_count(payment_schedule[i-1].date,date,self.compounding_method,eom=self.payment_end_of_month)))
             balance_bop=self._quantize(payment_schedule[i-1].loan_balance_amount)
             interest_amount= self._quantize(0) if balance_bop == Decimal(str(0)) else self._quantize(balance_bop*self.interest_rate*compounding_factor)
             principal_amount = self._quantize(0) if balance_bop == Decimal(str(0)) else min(self._quantize(self.payment_amount)-interest_amount,balance_bop)
@@ -100,3 +100,15 @@ class Loan(object):
             payment_schedule.append(payment)
 
         return payment_schedule
+
+    ef get_loan_summary(self):
+        payment_schedule=self.get_payment_schedule()
+        total_payment_amount=0
+        total_interest_amount=0
+        for payment in payment_schedule:
+            total_payment_amount +=payment.payment_amount
+            total_interest_amount +=payment.interest_amount
+
+        loan_summary=Loan_Summary(loan_amount=self.loan_amount,total_payment_amount=total_payment_amount,total_interest_amount=total_interest_amount)
+
+        return loan_summary
