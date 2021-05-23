@@ -215,7 +215,7 @@
 </pre></div>
 </div>
 <p>Next define a loan:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2021-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>The above defined 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% and monthly payment of 888.33 EUR starting on the 15th of June 2021.</p>
@@ -226,7 +226,7 @@
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">payment_schedule</span> <span class="o">=</span> <span class="n">loan</span><span class="o">.</span><span class="n">get_payment_schedule</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>This defined a named tuple with the following fields:</p>
+<p>The above outputs a list of named tuples with the following fields per row:</p>
 <ul class="simple">
 <li><p><cite>payment_id</cite>: sequence of payment.</p></li>
 <li><p><cite>date</cite>: date of payment.</p></li>
@@ -237,6 +237,7 @@
 <li><p><cite>total_principal_amount</cite>: sum of <cite>principal_amount</cite> and <cite>special_principal_amount</cite> (if applicable).</p></li>
 <li><p><cite>loan_balance_amount</cite>: amount of loan balance as at end of payment <cite>date</cite>.</p></li>
 </ul>
+<p>The first row represents the loan start with the ‘loan_balance_column’ equal to the loan amount. Each subsequent row represents loan repayment.</p>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
 <p>To define payment schedule as <cite>pandas</cite> DataFrame, use the method <cite>from_records</cite>:</p>
@@ -246,6 +247,13 @@
 <p>This will generate a familiar DataFrame with named tuple fields as columns.</p>
 <img alt="Pandas DataFrame output of the payment schedule" src="_images/pandas_df_output.png" />
 </div>
+<p>The main assumption of the above is that repayments are on monthly basis. It is possible to change this to quarterly, semi-annual or annual payments by setting value of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code> to 4, 2 or 1, respectively. Default argument value is 12 (monthly payments).</p>
+<p>In addition, the payment schedule above assumes that payments are made at month end, with the first payment starting on the 30th of June 2020. In case repayments are not made at month end, this can be adjusted by setting the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">payment_end_of_month</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> and setting the argument <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> to the date of the first payment date.</p>
+<p>Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2021-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2020-09-15&#39;</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="Pandas DataFrame output of the payment schedule on specific days on quarterly basis." src="_images/loan_quarterly_payments_on_specific_dates.png" />
 </div>
 </div>
 <div class="section" id="support">

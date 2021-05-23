@@ -51,7 +51,7 @@ Defining a loan with PyLoan is very simple. Begin by importing the PyLoan module
 
 Next define a loan::
 
-  loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2021-06-15',payment_amount=888.33)
+  loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',payment_amount=888.33)
 
 The above defined 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% and monthly payment of 888.33 EUR starting on the 15th of June 2021.
 
@@ -62,7 +62,7 @@ To view the payment schedule and loan amortization use the ``get_payment_schedul
 
   payment_schedule = loan.get_payment_schedule()
 
-This defined a named tuple with the following fields:
+The above outputs a list of named tuples with the following fields per row:
 
 * `payment_id`: sequence of payment.
 * `date`: date of payment.
@@ -73,6 +73,8 @@ This defined a named tuple with the following fields:
 * `total_principal_amount`: sum of `principal_amount` and `special_principal_amount` (if applicable).
 * `loan_balance_amount`: amount of loan balance as at end of payment `date`.
 
+The first row represents the loan start with the 'loan_balance_column' equal to the loan amount. Each subsequent row represents loan repayment.
+
 .. tip::
    To define payment schedule as `pandas` DataFrame, use the method `from_records`::
 
@@ -82,3 +84,14 @@ This defined a named tuple with the following fields:
 
    .. image:: _static/pandas_df_output.png
       :alt: Pandas DataFrame output of the payment schedule
+
+The main assumption of the above is that repayments are on monthly basis. It is possible to change this to quarterly, semi-annual or annual payments by setting value of the ``Loan`` argument ``annual_payments`` to 4, 2 or 1, respectively. Default argument value is 12 (monthly payments).
+
+In addition, the payment schedule above assumes that payments are made at month end, with the first payment starting on the 30th of June 2020. In case repayments are not made at month end, this can be adjusted by setting the ``Loan`` argument ``payment_end_of_month`` to ``False`` and setting the argument ``first_payment_date`` to the date of the first payment date.
+
+Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month::
+
+ loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2021-06-15',payment_amount=888.33,first_payment_date='2020-09-15',annual_payments=4)
+
+.. image:: _static/loan_quarterly_payments_on_specific_dates.png
+   :alt: Pandas DataFrame output of the payment schedule on specific days on quarterly basis.
