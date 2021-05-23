@@ -1,13 +1,15 @@
 # -*- coding: utf-8 -*-
-
 import datetime as dt
 import calendar as cal
-from collections import namedtuple
+import collections
+#from collections import namedtuple
 from decimal import Decimal
 from dateutil.relativedelta import relativedelta
 
-Payment=namedtuple('Payment',['payment_id','date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
-Loan_Summary=namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_interest_amount'])
+Payment=collections.namedtuple('Payment',['payment_id','date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
+
+Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
+Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_interest_amount','residual_loan_balance'])
 
 # To-do:
 ### Actual/360
@@ -28,9 +30,10 @@ class Loan(object):
         self.interest_only_period=interest_only_period
         self.annual_payments=annual_payments
         self.compounding_method=compounding_method
+        self.special_payments=[]
+        self.special_payments_schedule=[]
         self.no_of_payments=self.laon_term * self.annual_payments
         self.delta_dt=Decimal(str(12/self.annual_payments))
-        #self.compounding_factor=Decimal(str(1/self.annual_payments))
 
     @staticmethod
     def _quantize(amount):
@@ -70,16 +73,51 @@ class Loan(object):
         factor = day_count / year_days
         return factor
 
+    @staticmethod
+    def _get_special_payment_schedule(self,special_payment):
+        no_of_payments=special_payment.special_payment_term * special_payment.annual_payments
+        annual_payments = special_payment.annual_payments
+        dt0=dt.datetime.strptime(special_payment.first_payment_date,'%Y-%m-%d')
+        special_payment_amount=self._quantize(special_payment.payment_amount)
+        initial_special_payment=Payment(payment_id=0,date=dt0,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=special_payment_amount,total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(0))
+        special_payment_schedule=[initial_special_payment]
+
+        for i in range(1,no_of_payments+1):
+            date=dt0+relativedelta(months=i*12/annual_payments)
+            special_payment=Payment(payment_id=i,date=date,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=special_payment_amount,total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(0))
+            special_payment_schedule.append(special_payment)
+
+        return special_payment_schedule
 
     def get_payment_schedule(self):
         initial_payment=Payment(payment_id=0,date=self.start_date,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=self._quantize(0),total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(self.loan_amount))
         payment_schedule=[initial_payment]
 
         if self.first_payment_date is None:
-            dt0 = self.start_date
+            if self.payment_end_of_month==True:
+                dt0 = dt.datetime(self.start_date.year,self.start_date.month,cal.monthrange(self.start_date.year,self.start_date.month)[1],0,0)+relativedelta(months=-12/self.annual_payments)
+            else:
+                dt0 = self.start_date
         else:
             dt0=self.first_payment_date+relativedelta(months=-12/self.annual_payments)
 
+        # take care of special payments
+        special_payments_schedule_raw=[]
+        special_payments_schedule=[]
+        if len(self.special_payments_schedule)>0:
+            for i in range(len(self.special_payments_schedule)):
+                for j in range(len(self.special_payments_schedule[i])):
+                    special_payments_schedule_raw.append([self.special_payments_schedule[i][j].date,self.special_payments_schedule[i][j].special_principal_amount])
+
+        special_payments_schedule_dates=list(collections.ChainMap(special_payments_schedule_raw))
+        for i in range(len(special_payments_schedule_dates)):
+            amt=self._quantize(0)
+            for j in range(len(special_payments_schedule_raw)):
+                if special_payments_schedule_raw[j][0]==special_payments_schedule_dates[i]:
+                    amt+=special_payments_schedule_raw[j][1]
+            special_payments_schedule.append([special_payments_schedule_dates[i],amt])
+
+        # calculate payment schedule
         for i in range(1,self.no_of_payments+1):
 
             date=dt0+relativedelta(months=i*12/self.annual_payments)
@@ -92,6 +130,11 @@ class Loan(object):
             interest_amount= self._quantize(0) if balance_bop == Decimal(str(0)) else self._quantize(balance_bop*self.interest_rate*compounding_factor)
             principal_amount = self._quantize(0) if balance_bop == Decimal(str(0)) else min(self._quantize(self.payment_amount)-interest_amount,balance_bop)
             special_principal_amount= self._quantize(0)
+
+            for j in range(len(special_payments_schedule)):
+                if date == special_payments_schedule[j][0]:
+                    special_principal_amount = special_payments_schedule[j][1]
+
             total_principal_amount= min(principal_amount+special_principal_amount,balance_bop)
             total_payment_amount=total_principal_amount+interest_amount
             balance_eop = max(balance_bop-total_principal_amount,0)
@@ -101,14 +144,23 @@ class Loan(object):
 
         return payment_schedule
 
-    ef get_loan_summary(self):
+    def add_special_payment(self,payment_amount,first_payment_date,special_payment_term,annual_payments):
+        special_payment=Special_Payment(payment_amount=payment_amount,first_payment_date=first_payment_date,special_payment_term=special_payment_term,annual_payments=annual_payments)
+        self.special_payments.append(special_payment)
+        self.special_payments_schedule.append(self._get_special_payment_schedule(self,special_payment))
+
+
+
+    def get_loan_summary(self):
         payment_schedule=self.get_payment_schedule()
         total_payment_amount=0
         total_interest_amount=0
+        total_principal_amount=0
         for payment in payment_schedule:
             total_payment_amount +=payment.payment_amount
             total_interest_amount +=payment.interest_amount
+            total_principal_amount +=payment.total_principal_amount
 
-        loan_summary=Loan_Summary(loan_amount=self.loan_amount,total_payment_amount=total_payment_amount,total_interest_amount=total_interest_amount)
+        loan_summary=Loan_Summary(loan_amount=self.loan_amount,total_payment_amount=total_payment_amount,total_interest_amount=total_interest_amount,residual_loan_balance=self._quantize(self.loan_amount-total_principal_amount))
 
         return loan_summary
