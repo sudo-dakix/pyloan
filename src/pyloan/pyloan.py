@@ -82,7 +82,7 @@ class Loan(object):
         initial_special_payment=Payment(payment_id=0,date=dt0,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=special_payment_amount,total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(0))
         special_payment_schedule=[initial_special_payment]
 
-        for i in range(1,no_of_payments+1):
+        for i in range(1,no_of_payments):
             date=dt0+relativedelta(months=i*12/annual_payments)
             special_payment=Payment(payment_id=i,date=date,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=special_payment_amount,total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(0))
             special_payment_schedule.append(special_payment)

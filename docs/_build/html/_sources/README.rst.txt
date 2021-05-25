@@ -53,7 +53,7 @@ Next define a loan::
 
   loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',payment_amount=888.33)
 
-The above defined 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% and monthly payment of 888.33 EUR starting on the 15th of June 2021.
+The above defined 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% and monthly payment of 888.33 EUR starting on the 15th of June 2020.
 
 --------------------
 Get payment schedule
@@ -91,7 +91,35 @@ In addition, the payment schedule above assumes that payments are made at month 
 
 Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month::
 
- loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2021-06-15',payment_amount=888.33,first_payment_date='2020-09-15',annual_payments=4)
+ loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',payment_amount=888.33,first_payment_date='2020-09-15',annual_payments=4)
 
 .. image:: _static/loan_quarterly_payments_on_specific_dates.png
    :alt: Pandas DataFrame output of the payment schedule on specific days on quarterly basis.
+
+--------------------
+Add special payments
+--------------------
+To add special payments to the loand, use the `add_special_payment` method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually::
+
+  loan.add_special_payment(payment_amount=5000,first_payment_date='2021-03-15',special_payment_term=8,annual_payments=1)
+
+Next, recalculate payment schedule considering special payments as defined above::
+
+  payment_schedule = loan.get_payment_schedule()
+
+This updates payment schedule by considering special payments
+
+.. image:: _static/special_payments.png
+   :alt: Considering special payments in payment schedule.
+
+-------------------------
+Interest rate compounding
+-------------------------
+By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the `compounding_method` attribute when defining a loan, which accepts the following day count conventions:
+
+* 30A/360.
+* 30U/360.
+* 30E/360.
+* 30E/360 ISDA.
+
+As of current version (v.0.0.1.5), actual day count method is under development.
