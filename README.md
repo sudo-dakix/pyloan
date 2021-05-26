@@ -11,7 +11,7 @@ All documentation is in the "docs" directory and online at https://pyloan.readth
 ## To-Do
 
 * Add Actual method for interest rate compounding.
-* Add special principal repayments.
 * Add loan summary details.
 * Integrate end_date.
 * Extend documentation.
+* Allow for complete depreciation of the loan (when payment_amount) is not specified.
