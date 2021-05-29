@@ -1,7 +1,7 @@
 Metadata-Version: 2.1
 Name: pyloan
-Version: 0.0.1.6
-Summary: A small package for (mortgage) loan calculations
+Version: 0.0.1.7
+Summary: A package for mortgage/loan calculations.
 Home-page: https://github.com/sudo-dakix/pyloan
 Author: Da.Ki.X
 Author-email: dakix@protonmail.com
