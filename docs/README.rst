@@ -122,4 +122,4 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * 30E/360.
 * 30E/360 ISDA.
 
-As of current version (v.0.0.1.5), actual day count method is under development.
+As of current version, actual day count method is under development.
