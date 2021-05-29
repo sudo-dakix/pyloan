@@ -107,18 +107,20 @@ class Loan(object):
         # take care of special payments
         special_payments_schedule_raw=[]
         special_payments_schedule=[]
+        special_payments_dates=[]
         if len(self.special_payments_schedule)>0:
             for i in range(len(self.special_payments_schedule)):
                 for j in range(len(self.special_payments_schedule[i])):
                     special_payments_schedule_raw.append([self.special_payments_schedule[i][j].date,self.special_payments_schedule[i][j].special_principal_amount])
+                    if self.special_payments_schedule[i][j].date not in special_payments_dates:
+                        special_payments_dates.append(self.special_payments_schedule[i][j].date)
 
-        special_payments_schedule_dates=list(collections.ChainMap(special_payments_schedule_raw))
-        for i in range(len(special_payments_schedule_dates)):
+        for i in range(len(special_payments_dates)):
             amt=self._quantize(str(0))
             for j in range(len(special_payments_schedule_raw)):
-                if special_payments_schedule_raw[j][0]==special_payments_schedule_dates[i]:
+                if special_payments_schedule_raw[j][0]==special_payments_dates[i]:
                     amt+=special_payments_schedule_raw[j][1]
-            special_payments_schedule.append([special_payments_schedule_dates[i],amt])
+            special_payments_schedule.append([special_payments_dates[i],amt])
 
         # calculate payment schedule
         m=0
