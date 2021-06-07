@@ -42,31 +42,41 @@ class Loan(object):
         dt1_eom_day=cal.monthrange(y1,m1)[1]
         dt2_eom_day=cal.monthrange(y2,m2)[1]
 
-        if method=='30A/360':
-            d1 = min(d1,30)
-            d2 = min(d2,30) if d1 == 30 else d2
-        if method=='30U/360':
-            if eom and m1 == 2 and d1==dt1_eom_day and m2==2 and d2==dt2_eom_day:
-                d2=30
-            if eom and m1 == 2 and d1==dt1_eom_day:
-                d1=30
-            if d2 == 31 and d1 >= 30:
-                d2=30
-            if d1==31:
-                d1=30
-        if method=='30E/360':
-            if d1 == 31:
-                d1=30
-            if d2 == 31:
-                d2=30
-        if method=='30E/360 ISDA':
-            if d1==dt1_eom_day:
-                d1=30
-            if d2==dt2_eom_day and m2 != 2:
-                d2=30
+        if method in {'30A/360','30U/360','30E/360','30E/360 ISDA'}:
+            if method=='30A/360':
+                d1 = min(d1,30)
+                d2 = min(d2,30) if d1 == 30 else d2
+            if method=='30U/360':
+                if eom and m1 == 2 and d1==dt1_eom_day and m2==2 and d2==dt2_eom_day:
+                    d2=30
+                if eom and m1 == 2 and d1==dt1_eom_day:
+                    d1=30
+                if d2 == 31 and d1 >= 30:
+                    d2=30
+                if d1==31:
+                    d1=30
+            if method=='30E/360':
+                if d1 == 31:
+                    d1=30
+                if d2 == 31:
+                    d2=30
+            if method=='30E/360 ISDA':
+                if d1==dt1_eom_day:
+                    d1=30
+                if d2==dt2_eom_day and m2 != 2:
+                    d2=30
 
-        day_count = (360*(y2-y1)+30*(m2-m1)+(d2-d1))
-        year_days = 360
+            day_count = (360*(y2-y1)+30*(m2-m1)+(d2-d1))
+            year_days = 360
+
+        if method=='A/365F':
+            day_count=(dt2-dt1).days
+            year_days=365
+
+        if method=='A/360':
+            day_count=(dt2-dt1).days
+            year_days=360
+
         factor = day_count / year_days
         return factor
 
