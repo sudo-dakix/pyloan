@@ -97,6 +97,8 @@
 <li><a class="reference internal" href="#quickstart">Quickstart</a><ul>
 <li><a class="reference internal" href="#define-a-loan">Define a loan</a></li>
 <li><a class="reference internal" href="#get-payment-schedule">Get payment schedule</a></li>
+<li><a class="reference internal" href="#specify-payment-amount">Specify payment amount</a></li>
+<li><a class="reference internal" href="#specify-payment-frequency">Specify payment frequency</a></li>
 <li><a class="reference internal" href="#add-special-payments">Add special payments</a></li>
 <li><a class="reference internal" href="#interest-rate-compounding">Interest rate compounding</a></li>
 </ul>
@@ -209,7 +211,7 @@
 </div>
 <div class="section" id="quickstart">
 <h2>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h2>
-<p>This section gives an introduction in how to get started with PyLoan.</p>
+<p>This section gives an introduction on how to get started with PyLoan.</p>
 <div class="section" id="define-a-loan">
 <h3>Define a loan<a class="headerlink" href="#define-a-loan" title="Permalink to this headline">¶</a></h3>
 <p>Defining a loan with PyLoan is very simple. Begin by importing the PyLoan module:</p>
@@ -217,10 +219,10 @@
 </pre></div>
 </div>
 <p>Next define a loan:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>The above defined 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% and monthly payment of 888.33 EUR starting on the 15th of June 2020.</p>
+<p>The above defines a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020. By default, monthly payment amount will be calculated to amortize the loan amount fully over the given loan term. Also, by default, monthly payments fall on the last day of the month.</p>
 </div>
 <div class="section" id="get-payment-schedule">
 <h3>Get payment schedule<a class="headerlink" href="#get-payment-schedule" title="Permalink to this headline">¶</a></h3>
@@ -230,7 +232,6 @@
 </div>
 <p>The above outputs a list of named tuples with the following fields per row:</p>
 <ul class="simple">
-<li><p><cite>payment_id</cite>: sequence of payment.</p></li>
 <li><p><cite>date</cite>: date of payment.</p></li>
 <li><p><cite>payment_amount</cite>: periodic payment amount of principal and interest.</p></li>
 <li><p><cite>interest_amount</cite>: part of periodic payment amount that is interest.</p></li>
@@ -249,7 +250,18 @@
 <p>This will generate a familiar DataFrame with named tuple fields as columns.</p>
 <img alt="Pandas DataFrame output of the payment schedule" src="_images/pandas_df_output.png" />
 </div>
-<p>The main assumption of the above is that repayments are on monthly basis. It is possible to change this to quarterly, semi-annual or annual payments by setting value of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code> to 4, 2 or 1, respectively. Default argument value is 12 (monthly payments).</p>
+</div>
+<div class="section" id="specify-payment-amount">
+<h3>Specify payment amount<a class="headerlink" href="#specify-payment-amount" title="Permalink to this headline">¶</a></h3>
+<p>The example above calculated the payment amount that fully amortized the loan amount over its term. It is possible to specify a payment amount. Depending on the payment amount, the loan may be fully amortized over the loan term of not. To specify the payment amount use <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">payment_amount</span></code>. Using the example above, add payment amount of 888.33 EUR per month:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="Pandas DataFrame output of the payment schedule with the specified payment amount." src="_images/specify_payment_amount.png" />
+</div>
+<div class="section" id="specify-payment-frequency">
+<h3>Specify payment frequency<a class="headerlink" href="#specify-payment-frequency" title="Permalink to this headline">¶</a></h3>
+<p>The example above defines a loan with monthly repayment basis. It is possible to change this to quarterly, semi-annual or annual payments by setting value of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code> to 4, 2 or 1, respectively. Default argument value is 12 (monthly payments).</p>
 <p>In addition, the payment schedule above assumes that payments are made at month end, with the first payment starting on the 30th of June 2020. In case repayments are not made at month end, this can be adjusted by setting the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">payment_end_of_month</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> and setting the argument <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> to the date of the first payment date.</p>
 <p>Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2020-09-15&#39;</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
@@ -279,7 +291,7 @@
 <li><p>30E/360.</p></li>
 <li><p>30E/360 ISDA.</p></li>
 </ul>
-<p>As of current version (v.0.0.1.5), actual day count method is under development.</p>
+<p>As of current version, actual day count method is under development.</p>
 </div>
 </div>
 <div class="section" id="support">
