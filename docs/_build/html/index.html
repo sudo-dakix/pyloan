@@ -99,6 +99,7 @@
 <li><a class="reference internal" href="#get-payment-schedule">Get payment schedule</a></li>
 <li><a class="reference internal" href="#specify-payment-amount">Specify payment amount</a></li>
 <li><a class="reference internal" href="#specify-payment-frequency">Specify payment frequency</a></li>
+<li><a class="reference internal" href="#specify-payment-date">Specify payment date</a></li>
 <li><a class="reference internal" href="#add-special-payments">Add special payments</a></li>
 <li><a class="reference internal" href="#interest-rate-compounding">Interest rate compounding</a></li>
 </ul>
@@ -264,15 +265,21 @@
 <p>The example above defines a loan with monthly repayment basis. It is possible to change this to quarterly, semi-annual or annual payments by setting value of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code> to 4, 2 or 1, respectively. Default argument value is 12 (monthly payments).</p>
 <p>In addition, the payment schedule above assumes that payments are made at month end, with the first payment starting on the 30th of June 2020. In case repayments are not made at month end, this can be adjusted by setting the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">payment_end_of_month</span></code> to <code class="docutils literal notranslate"><span class="pre">False</span></code> and setting the argument <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> to the date of the first payment date.</p>
 <p>Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2020-09-15&#39;</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">payment_amount</span><span class="o">=</span><span class="mf">888.33</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
-<img alt="Pandas DataFrame output of the payment schedule on specific days on quarterly basis." src="_images/loan_quarterly_payments_on_specific_dates.png" />
+<img alt="Pandas DataFrame output of the payment schedule on quarterly basis." src="_images/loan_quarterly_payments.png" />
+</div>
+<div class="section" id="specify-payment-date">
+<h3>Specify payment date<a class="headerlink" href="#specify-payment-date" title="Permalink to this headline">¶</a></h3>
+<p>In the examples above, payments were made on month end. It is possible to change this to a particular day of the month by setting of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> to a particular date. This will make the first and all subsequent payments fall on the specified day of the <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> argument.</p>
+<p>Following the example above, make first payment fall on the 17th of September. Each subsequent payment will fall on the 17th day of the month on which the payment is due.</p>
+<img alt="Specify payment date other than month end date." src="_images/first_payment_date.png" />
 </div>
 <div class="section" id="add-special-payments">
 <h3>Add special payments<a class="headerlink" href="#add-special-payments" title="Permalink to this headline">¶</a></h3>
-<p>To add special payments to the loand, use the <cite>add_special_payment</cite> method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span><span class="o">.</span><span class="n">add_special_payment</span><span class="p">(</span><span class="n">payment_amount</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2021-03-15&#39;</span><span class="p">,</span><span class="n">special_payment_term</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+<p>To add special payments to the loan, use the <cite>add_special_payment</cite> method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span><span class="o">.</span><span class="n">add_special_payment</span><span class="p">(</span><span class="n">payment_amount</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2021-03-17&#39;</span><span class="p">,</span><span class="n">special_payment_term</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>Next, recalculate payment schedule considering special payments as defined above:</p>
@@ -281,6 +288,8 @@
 </div>
 <p>This updates payment schedule by considering special payments</p>
 <img alt="Considering special payments in payment schedule." src="_images/special_payments.png" />
+<p>In the example above, special payments coincided with the payment date of a regular payment. It is possible to make special payments fall on dates other than the regular payment dates.</p>
+<img alt="Special payments fall on dates other than regular payments." src="_images/special_payments_on_odd_dates.png" />
 </div>
 <div class="section" id="interest-rate-compounding">
 <h3>Interest rate compounding<a class="headerlink" href="#interest-rate-compounding" title="Permalink to this headline">¶</a></h3>
@@ -290,8 +299,9 @@
 <li><p>30U/360.</p></li>
 <li><p>30E/360.</p></li>
 <li><p>30E/360 ISDA.</p></li>
+<li><p>A/360 (short for Actual/360).</p></li>
+<li><p>A/365F (short for Actual/365 Fixed).</p></li>
 </ul>
-<p>As of current version, actual day count method is under development.</p>
 </div>
 </div>
 <div class="section" id="support">
