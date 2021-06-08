@@ -103,17 +103,27 @@ In addition, the payment schedule above assumes that payments are made at month 
 
 Below is an example of the same loan that is paid on quarterly basis, on the 15th of every month::
 
- loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',payment_amount=888.33,first_payment_date='2020-09-15',annual_payments=4)
+ loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',payment_amount=888.33,annual_payments=4)
 
-.. image:: _static/loan_quarterly_payments_on_specific_dates.png
-   :alt: Pandas DataFrame output of the payment schedule on specific days on quarterly basis.
+.. image:: _static/loan_quarterly_payments.png
+   :alt: Pandas DataFrame output of the payment schedule on quarterly basis.
+
+--------------------
+Specify payment date
+--------------------
+In the examples above, payments were made on month end. It is possible to change this to a particular day of the month by setting of the ``Loan`` argument ``first_payment_date`` to a particular date. This will make the first and all subsequent payments fall on the specified day of the ``first_payment_date`` argument.
+
+Following the example above, make first payment fall on the 17th of September. Each subsequent payment will fall on the 17th day of the month on which the payment is due.
+
+.. image:: _static/first_payment_date.png
+   :alt: Specify payment date other than month end date.
 
 --------------------
 Add special payments
 --------------------
-To add special payments to the loand, use the `add_special_payment` method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually::
+To add special payments to the loan, use the `add_special_payment` method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually::
 
-  loan.add_special_payment(payment_amount=5000,first_payment_date='2021-03-15',special_payment_term=8,annual_payments=1)
+  loan.add_special_payment(payment_amount=5000,first_payment_date='2021-03-17',special_payment_term=8,annual_payments=1)
 
 Next, recalculate payment schedule considering special payments as defined above::
 
@@ -124,6 +134,11 @@ This updates payment schedule by considering special payments
 .. image:: _static/special_payments.png
    :alt: Considering special payments in payment schedule.
 
+In the example above, special payments coincided with the payment date of a regular payment. It is possible to make special payments fall on dates other than the regular payment dates.
+
+.. image:: _static/special_payments_on_odd_dates.png
+   :alt: Special payments fall on dates other than regular payments.
+
 -------------------------
 Interest rate compounding
 -------------------------
@@ -133,5 +148,5 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * 30U/360.
 * 30E/360.
 * 30E/360 ISDA.
-
-As of current version, actual day count method is under development.
+* A/360 (short for Actual/360).
+* A/365F (short for Actual/365 Fixed).
