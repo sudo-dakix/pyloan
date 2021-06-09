@@ -101,6 +101,7 @@
 <li><a class="reference internal" href="#specify-payment-frequency">Specify payment frequency</a></li>
 <li><a class="reference internal" href="#specify-payment-date">Specify payment date</a></li>
 <li><a class="reference internal" href="#add-special-payments">Add special payments</a></li>
+<li><a class="reference internal" href="#interest-only-period">Interest-only period</a></li>
 <li><a class="reference internal" href="#interest-rate-compounding">Interest rate compounding</a></li>
 </ul>
 </li>
@@ -288,6 +289,20 @@
 <img alt="Considering special payments in payment schedule." src="_images/special_payments.png" />
 <p>In the example above, special payments coincided with the payment date of a regular payment. It is possible to make special payments fall on dates other than the regular payment dates.</p>
 <img alt="Special payments fall on dates other than regular payments." src="_images/special_payments_on_odd_dates.png" />
+</div>
+<div class="section" id="interest-only-period">
+<h3>Interest-only period<a class="headerlink" href="#interest-only-period" title="Permalink to this headline">¶</a></h3>
+<p>In the examples above, principal and interest payments were made starting with the first payment due. It is possible to specify interest-only period by setting of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">interest_only_period</span></code> to value greater than 0 (default value).</p>
+<p>Using the initial example presented in this documentation, defines a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020. By default, monthly payment amount will be calculated to amortize the loan amount fully over the given loan term. Also, by default, monthly payments fall on the last day of the month. However, let’s say interest-only period is 3-months; that is the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">interest_only_period=3</span></code>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span> <span class="o">=</span> <span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">interest_only_period</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The loan defined above resembles the original example presented in this documentation. The only difference is that for the first 3 payments, payment includes interest-only (no principal amount).</p>
+<img alt="Loan with 3-month interest-only period." src="_images/interest_only_period.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Consider that the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">interest_only_period</span></code> defines the number of payments that are interest-only. In the example above, payments were on monthly basis (the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments=12</span></code> (default value)). If the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code> is set to 6, 4 or 1 (semi-annual, quarterly or annual), then the the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">interest_only_period=3</span></code> would result in interest-only payments of 3 semi-annual or 3 quarterly, or 3 annual payments (depending on the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument value of <code class="docutils literal notranslate"><span class="pre">annual_payments</span></code>).</p>
+</div>
 </div>
 <div class="section" id="interest-rate-compounding">
 <h3>Interest rate compounding<a class="headerlink" href="#interest-rate-compounding" title="Permalink to this headline">¶</a></h3>
