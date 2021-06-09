@@ -139,6 +139,23 @@ In the example above, special payments coincided with the payment date of a regu
 .. image:: _static/special_payments_on_odd_dates.png
    :alt: Special payments fall on dates other than regular payments.
 
+--------------------
+Interest-only period
+--------------------
+In the examples above, principal and interest payments were made starting with the first payment due. It is possible to specify interest-only period by setting of the ``Loan`` argument ``interest_only_period`` to value greater than 0 (default value).
+
+Using the initial example presented in this documentation, defines a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020. By default, monthly payment amount will be calculated to amortize the loan amount fully over the given loan term. Also, by default, monthly payments fall on the last day of the month. However, let's say interest-only period is 3-months; that is the ``Loan`` argument ``interest_only_period=3``::
+
+  loan = pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',interest_only_period=3)
+
+The loan defined above resembles the original example presented in this documentation. The only difference is that for the first 3 payments, payment includes interest-only (no principal amount).
+
+.. image:: _static/interest_only_period.png
+   :alt: Loan with 3-month interest-only period.
+
+.. note::
+  Consider that the ``Loan`` argument ``interest_only_period`` defines the number of payments that are interest-only. In the example above, payments were on monthly basis (the ``Loan`` argument ``annual_payments=12`` (default value)). If the ``Loan`` argument ``annual_payments`` is set to 6, 4 or 1 (semi-annual, quarterly or annual), then the the ``Loan`` argument ``interest_only_period=3`` would result in interest-only payments of 3 semi-annual or 3 quarterly, or 3 annual payments (depending on the ``Loan`` argument value of ``annual_payments``).
+
 -------------------------
 Interest rate compounding
 -------------------------

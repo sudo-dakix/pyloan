@@ -101,7 +101,7 @@ class Loan(object):
         payment_schedule=[initial_payment]
 
         if self.payment_amount is None:
-            regular_principal_payment_amount= self.loan_amount*((self.interest_rate/self.annual_payments)*(1+(self.interest_rate/self.annual_payments))**(self.no_of_payments))/((1+(self.interest_rate/self.annual_payments))**(self.no_of_payments)-1)
+            regular_principal_payment_amount= self.loan_amount*((self.interest_rate/self.annual_payments)*(1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-self.interest_only_period)))/((1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-self.interest_only_period))-1)
         else:
             regular_principal_payment_amount=self.payment_amount
 
@@ -170,8 +170,8 @@ class Loan(object):
                     compounding_factor=Decimal(str(self._get_day_count(bop_date,date,self.compounding_method,eom=self.payment_end_of_month)))
 
             interest_amount= self._quantize(0) if balance_bop == Decimal(str(0)) else self._quantize(balance_bop*self.interest_rate*compounding_factor)
-            principal_amount = self._quantize(0) if balance_bop == Decimal(str(0)) else min(self._quantize(regular_principal_payment_amount)-interest_amount,balance_bop)
-            special_principal_amount=min(balance_bop-principal_amount,special_principal_amount)
+            principal_amount = self._quantize(0) if balance_bop == Decimal(str(0)) or self.interest_only_period >= i else min(self._quantize(regular_principal_payment_amount)-interest_amount,balance_bop)
+            special_principal_amount=min(balance_bop-principal_amount,special_principal_amount) if self.interest_only_period < i else self._quantize(0)
             total_principal_amount= min(principal_amount+special_principal_amount,balance_bop)
             total_payment_amount=total_principal_amount+interest_amount
             balance_eop = max(balance_bop-total_principal_amount,self._quantize(0))
