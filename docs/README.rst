@@ -167,3 +167,4 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * 30E/360 ISDA.
 * A/360 (short for Actual/360).
 * A/365F (short for Actual/365 Fixed).
+* A/A ISDA (short for Actual/Actual ISDA).

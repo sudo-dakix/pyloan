@@ -35,6 +35,7 @@ class Loan(object):
     @staticmethod
     def _quantize(amount):
         return Decimal(str(amount)).quantize(Decimal(str(0.01)))
+
     @staticmethod
     def _get_day_count(dt1,dt2,method,eom=False):
         y1, m1, d1 = dt1.year, dt1.month, dt1.day
@@ -76,6 +77,26 @@ class Loan(object):
         if method=='A/360':
             day_count=(dt2-dt1).days
             year_days=360
+
+        if method=='A/A ISDA':
+            djn_dt1=(1461 * (y1 + 4800 + (m1 - 14)/12))/4 +(367 * (m1 - 2 - 12 * ((m1 - 14)/12)))/12 - (3 * ((y1 + 4900 + (m1 - 14)/12)/100))/4 + d1 - 32075
+            djn_dt2=(1461 * (y2 + 4800 + (m2 - 14)/12))/4 +(367 * (m2 - 2 - 12 * ((m2 - 14)/12)))/12 - (3 * ((y2 + 4900 + (m2 - 14)/12)/100))/4 + d2 - 32075
+            if y1==y2:
+                day_count=djn_dt2-djn_dt1
+                year_days=366 if cal.isleap(y2) else 365
+            if y1 < y2:
+                djn_dt1_eoy=(1461 * (y1 + 4800 + (12 - 14)/12))/4 +(367 * (12 - 2 - 12 * ((12 - 14)/12)))/12 - (3 * ((y1 + 4900 + (12 - 14)/12)/100))/4 + 31 - 32075
+                day_count_dt1=djn_dt1_eoy-djn_dt1
+                year_days_dt1=366 if cal.isleap(y1) else 365
+
+                djn_dt2_boy=(1461 * (y2 + 4800 + (1 - 14)/12))/4 +(367 * (1 - 2 - 12 * ((1 - 14)/12)))/12 - (3 * ((y2 + 4900 + (1 - 14)/12)/100))/4 + 1 - 32075
+                day_count_dt2=djn_dt2-djn_dt2_boy
+                year_days_dt2=366 if cal.isleap(y2) else 365
+
+                diff=y2-y1-1
+
+                day_count=(day_count_dt1*year_days_dt2)+(day_count_dt2*year_days_dt1)+(diff*year_days_dt1*year_days_dt2)
+                year_days=year_days_dt1*year_days_dt2
 
         factor = day_count / year_days
         return factor
