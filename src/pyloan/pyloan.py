@@ -83,20 +83,29 @@ class Loan(object):
             day_count=(dt2-dt1).days
             year_days=360
 
-        if method=='A/A ISDA':
+        if method in {'A/A ISDA','A/A AFB'}:
             djn_dt1= get_julian_day_number(y1,m1,d1)
             djn_dt2= get_julian_day_number(y2,m2,d2)
             if y1==y2:
                 day_count=djn_dt2-djn_dt1
-                year_days=366 if cal.isleap(y2) else 365
+                if method=='A/A ISDA':
+                    year_days=366 if cal.isleap(y2) else 365
+                if method=='A/A AFB':
+                    year_days=366 if cal.isleap(y1) and (m1<3) else 365
             if y1 < y2:
                 djn_dt1_eoy= get_julian_day_number(y1,12,31)
                 day_count_dt1=djn_dt1_eoy-djn_dt1
-                year_days_dt1=366 if cal.isleap(y1) else 365
+                if method=='A/A ISDA':
+                    year_days_dt1=366 if cal.isleap(y1) else 365
+                if method=='A/A AFB':
+                    year_days_dt1=366 if cal.isleap(y1) and (m1<3) else 365
 
                 djn_dt2_boy= get_julian_day_number(y2,1,1)
                 day_count_dt2=djn_dt2-djn_dt2_boy
-                year_days_dt2=366 if cal.isleap(y2) else 365
+                if method=='A/A ISDA':
+                    year_days_dt2=366 if cal.isleap(y2) else 365
+                if method=='A/A AFB':
+                    year_days_dt2=366 if cal.isleap(y2) and (m2>=3) else 365
 
                 diff=y2-y1-1
 

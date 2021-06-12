@@ -11,6 +11,5 @@ All documentation is in the "docs" directory and online at https://pyloan.readth
 
 ## To-Do
 
-* Add Actual/Actual AFB.
 * Add loan summary details.
 * Extend documentation.
