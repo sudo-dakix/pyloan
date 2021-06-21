@@ -65,13 +65,13 @@ To view the payment schedule and loan amortization use the ``get_payment_schedul
 
 The above outputs a list of named tuples with the following fields per row:
 
-* `date`: date of payment.
-* `payment_amount`: periodic payment amount of principal and interest.
-* `interest_amount`: part of periodic payment amount that is interest.
-* `principal_amount`: part of periodic payment amount that is principal.
-* `special_principal_amount`: part of periodic payment amount that is ad-hoc/special principal.
-* `total_principal_amount`: sum of `principal_amount` and `special_principal_amount` (if applicable).
-* `loan_balance_amount`: amount of loan balance as at end of payment `date`.
+* ``date``: date of payment.
+* ``payment_amount``: periodic payment amount of principal and interest.
+* ``interest_amount``: part of periodic payment amount that is interest.
+* ``principal_amount``: part of periodic payment amount that is principal.
+* ``special_principal_amount``: part of periodic payment amount that is ad-hoc/special principal.
+* ``total_principal_amount``: sum of `principal_amount` and `special_principal_amount` (if applicable).
+* ``loan_balance_amount``: amount of loan balance as at end of payment `date`.
 
 The first row represents the loan start with the 'loan_balance_column' equal to the loan amount. Each subsequent row represents loan repayment.
 
@@ -166,7 +166,23 @@ To get loan summary, use the ``get_loan_summary`` method::
 
 The above outputs a list of named tuples with the following fields per row:
 
-*
+* ``loan_amount``: original loan amount.
+* ``total_payment_amount``: total amount paid (principal and interest) over the loan term.
+* ``total_principal_amount``: total principal amount repaid.
+* ``total_interest_amount``: total interest amount repaid.
+* ``residual_loan_balance``: residual loan amount balance (which is calculated as `loan_amount` less `total_principal_amount`).
+* ``repayment_to_principal``: ratio of total repaid amount to total repaid principal amount (which is calculated as `total_payment_amount` to `total_principal_amount`).
+
+
+.. tip::
+   To define payment schedule as `pandas` DataFrame, use the method `from_records`::
+
+    loan_summary_df=pd.DataFrame.from_records([loan.get_loan_summary()],columns=pyloan.Loan_Summary._fields)
+
+   This will generate a familiar DataFrame with named tuple fields as columns.
+
+   .. image:: _static/loan_summary.png
+      :alt: Pandas DataFrame output of the loan summary
 
 -------------------------
 Interest rate compounding

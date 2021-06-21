@@ -6,8 +6,9 @@ Everything you need to know about PyLoan - a simple mortgage/loan calculation to
 ========
 Features
 ========
-PyLoan can perform simple mortgage/loan calculations:
+PyLoan can perform mortgage/loan calculations:
 
+* Calculate payment amount to fully amortize a loan over its term.
 * Amortize a loan based on the specified payment schedule.
 * Consider ad-hoc or periodic special principal repayments during loan amortization schedule (under development).
 * Calculate interest payments using either 30/360 methods or actual methods.
@@ -64,13 +65,13 @@ To view the payment schedule and loan amortization use the ``get_payment_schedul
 
 The above outputs a list of named tuples with the following fields per row:
 
-* `date`: date of payment.
-* `payment_amount`: periodic payment amount of principal and interest.
-* `interest_amount`: part of periodic payment amount that is interest.
-* `principal_amount`: part of periodic payment amount that is principal.
-* `special_principal_amount`: part of periodic payment amount that is ad-hoc/special principal.
-* `total_principal_amount`: sum of `principal_amount` and `special_principal_amount` (if applicable).
-* `loan_balance_amount`: amount of loan balance as at end of payment `date`.
+* ``date``: date of payment.
+* ``payment_amount``: periodic payment amount of principal and interest.
+* ``interest_amount``: part of periodic payment amount that is interest.
+* ``principal_amount``: part of periodic payment amount that is principal.
+* ``special_principal_amount``: part of periodic payment amount that is ad-hoc/special principal.
+* ``total_principal_amount``: sum of `principal_amount` and `special_principal_amount` (if applicable).
+* ``loan_balance_amount``: amount of loan balance as at end of payment `date`.
 
 The first row represents the loan start with the 'loan_balance_column' equal to the loan amount. Each subsequent row represents loan repayment.
 
@@ -156,6 +157,33 @@ The loan defined above resembles the original example presented in this document
 .. note::
   Consider that the ``Loan`` argument ``interest_only_period`` defines the number of payments that are interest-only. In the example above, payments were on monthly basis (the ``Loan`` argument ``annual_payments=12`` (default value)). If the ``Loan`` argument ``annual_payments`` is set to 6, 4 or 1 (semi-annual, quarterly or annual), then the the ``Loan`` argument ``interest_only_period=3`` would result in interest-only payments of 3 semi-annual or 3 quarterly, or 3 annual payments (depending on the ``Loan`` argument value of ``annual_payments``).
 
+----------------
+Get loan summary
+----------------
+To get loan summary, use the ``get_loan_summary`` method::
+
+  payment_schedule = loan.get_loan_summary()
+
+The above outputs a list of named tuples with the following fields per row:
+
+* ``loan_amount``: original loan amount.
+* ``total_payment_amount``: total amount paid (principal and interest) over the loan term.
+* ``total_principal_amount``: total principal amount repaid.
+* ``total_interest_amount``: total interest amount repaid.
+* ``residual_loan_balance``: residual loan amount balance (which is calculated as `loan_amount` less `total_principal_amount`).
+* ``repayment_to_principal``: ratio of total repaid amount to total repaid principal amount (which is calculated as `total_payment_amount` to `total_principal_amount`).
+
+
+.. tip::
+   To define payment schedule as `pandas` DataFrame, use the method `from_records`::
+
+    loan_summary_df=pd.DataFrame.from_records([loan.get_loan_summary()],columns=pyloan.Loan_Summary._fields)
+
+   This will generate a familiar DataFrame with named tuple fields as columns.
+
+   .. image:: _static/loan_summary.png
+      :alt: Pandas DataFrame output of the loan summary
+
 -------------------------
 Interest rate compounding
 -------------------------
@@ -168,4 +196,4 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * A/360 (short for Actual/360).
 * A/365F (short for Actual/365 Fixed).
 * A/A ISDA (short for Actual/Actual ISDA).
-* A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro)
+* A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro).
