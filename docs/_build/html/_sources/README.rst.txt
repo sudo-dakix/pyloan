@@ -170,8 +170,8 @@ The above outputs a list of named tuples with the following fields per row:
 * ``total_payment_amount``: total amount paid (principal and interest) over the loan term.
 * ``total_principal_amount``: total principal amount repaid.
 * ``total_interest_amount``: total interest amount repaid.
-* ``residual_loan_balance``: residual loan amount balance (which is calculated as `loan_amount` less `total_principal_amount`).
-* ``repayment_to_principal``: ratio of total repaid amount to total repaid principal amount (which is calculated as `total_payment_amount` to `total_principal_amount`).
+* ``residual_loan_balance``: residual loan amount balance (which is calculated as ``loan_amount`` less ``total_principal_amount``).
+* ``repayment_to_principal``: ratio of total repaid amount to total repaid principal amount (which is calculated as ``total_payment_amount`` to ``total_principal_amount``).
 
 
 .. tip::
@@ -187,7 +187,7 @@ The above outputs a list of named tuples with the following fields per row:
 -------------------------
 Interest rate compounding
 -------------------------
-By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the `compounding_method` attribute when defining a loan, which accepts the following day count conventions:
+By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the ``compounding_method`` attribute when defining a loan, which accepts the following day count conventions:
 
 * 30A/360.
 * 30U/360.

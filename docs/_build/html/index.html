@@ -320,8 +320,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">total_payment_amount</span></code>: total amount paid (principal and interest) over the loan term.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>: total principal amount repaid.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">total_interest_amount</span></code>: total interest amount repaid.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">residual_loan_balance</span></code>: residual loan amount balance (which is calculated as <cite>loan_amount</cite> less <cite>total_principal_amount</cite>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">repayment_to_principal</span></code>: ratio of total repaid amount to total repaid principal amount (which is calculated as <cite>total_payment_amount</cite> to <cite>total_principal_amount</cite>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">residual_loan_balance</span></code>: residual loan amount balance (which is calculated as <code class="docutils literal notranslate"><span class="pre">loan_amount</span></code> less <code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">repayment_to_principal</span></code>: ratio of total repaid amount to total repaid principal amount (which is calculated as <code class="docutils literal notranslate"><span class="pre">total_payment_amount</span></code> to <code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>).</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -335,7 +335,7 @@
 </div>
 <div class="section" id="interest-rate-compounding">
 <h3>Interest rate compounding<a class="headerlink" href="#interest-rate-compounding" title="Permalink to this headline">¶</a></h3>
-<p>By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the <cite>compounding_method</cite> attribute when defining a loan, which accepts the following day count conventions:</p>
+<p>By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the <code class="docutils literal notranslate"><span class="pre">compounding_method</span></code> attribute when defining a loan, which accepts the following day count conventions:</p>
 <ul class="simple">
 <li><p>30A/360.</p></li>
 <li><p>30U/360.</p></li>
