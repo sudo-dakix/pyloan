@@ -8,7 +8,7 @@ from dateutil.relativedelta import relativedelta
 Payment=collections.namedtuple('Payment',['date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
 
 Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
-Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_interest_amount','residual_loan_balance'])
+Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_principal_amount','total_interest_amount','residual_loan_balance','repayment_to_principal'])
 
 # To-do:
 ### Actual/Actual
@@ -226,11 +226,14 @@ class Loan(object):
         total_payment_amount=0
         total_interest_amount=0
         total_principal_amount=0
+        repayment_to_principal=0
+
         for payment in payment_schedule:
             total_payment_amount +=payment.payment_amount
             total_interest_amount +=payment.interest_amount
             total_principal_amount +=payment.total_principal_amount
 
-        loan_summary=Loan_Summary(loan_amount=self.loan_amount,total_payment_amount=total_payment_amount,total_interest_amount=total_interest_amount,residual_loan_balance=self._quantize(self.loan_amount-total_principal_amount))
+        repayment_to_principal=self._quantize(total_payment_amount/total_principal_amount)
+        loan_summary=Loan_Summary(loan_amount=self._quantize(self.loan_amount),total_payment_amount=total_payment_amount,total_principal_amount=total_principal_amount,total_interest_amount=total_interest_amount,residual_loan_balance=self._quantize(self.loan_amount-total_principal_amount),repayment_to_principal=repayment_to_principal)
 
         return loan_summary

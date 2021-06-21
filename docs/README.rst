@@ -6,8 +6,9 @@ Everything you need to know about PyLoan - a simple mortgage/loan calculation to
 ========
 Features
 ========
-PyLoan can perform simple mortgage/loan calculations:
+PyLoan can perform mortgage/loan calculations:
 
+* Calculate payment amount to fully amortize a loan over its term.
 * Amortize a loan based on the specified payment schedule.
 * Consider ad-hoc or periodic special principal repayments during loan amortization schedule (under development).
 * Calculate interest payments using either 30/360 methods or actual methods.
@@ -156,6 +157,17 @@ The loan defined above resembles the original example presented in this document
 .. note::
   Consider that the ``Loan`` argument ``interest_only_period`` defines the number of payments that are interest-only. In the example above, payments were on monthly basis (the ``Loan`` argument ``annual_payments=12`` (default value)). If the ``Loan`` argument ``annual_payments`` is set to 6, 4 or 1 (semi-annual, quarterly or annual), then the the ``Loan`` argument ``interest_only_period=3`` would result in interest-only payments of 3 semi-annual or 3 quarterly, or 3 annual payments (depending on the ``Loan`` argument value of ``annual_payments``).
 
+----------------
+Get loan summary
+----------------
+To get loan summary, use the ``get_loan_summary`` method::
+
+  payment_schedule = loan.get_loan_summary()
+
+The above outputs a list of named tuples with the following fields per row:
+
+*
+
 -------------------------
 Interest rate compounding
 -------------------------
@@ -168,4 +180,4 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * A/360 (short for Actual/360).
 * A/365F (short for Actual/365 Fixed).
 * A/A ISDA (short for Actual/Actual ISDA).
-* A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro)
+* A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro).
