@@ -197,3 +197,19 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 * A/365F (short for Actual/365 Fixed).
 * A/A ISDA (short for Actual/Actual ISDA).
 * A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro).
+
+.. tip::
+   Certain day count conventions are more advantageous to the borrower while other day count conventions are more advantageous to the lender. Use the method ``get_loan_summary`` to compare which day count method is the least expensive and which is the most expensive in terms of total interest amount paid over the lifetime of a mortgage/loan.
+
+   Following the examples above, the code block below compares total interest amount paid on a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020::
+
+    day_count_conventions=['30A/360','30U/360','30E/360','30E/360 ISDA','A/360','A/365F','A/A ISDA','A/A AFB']
+    loan_summary=list(map(lambda x:[x,pyloan.Loan(loan_amount=160000,interest_rate=1.1,loan_term=10,start_date='2020-06-15',compounding_method=x).get_loan_summary().total_interest_amount],day_count_conventions))
+
+   Results can be summarized in the familiar pandas DataFrame::
+   
+    loan_summary_df=pd.DataFrame(loan_summary,columns=['day_count_method','total_interest_amount'])
+    loan_summary_df.sort_values(by=['total_interest_amount'],ascending=False)
+
+   .. image:: _static/day_count_methods.png
+      :alt: Pandas DataFrame comparing day count methods in terms of total interest amount paid
