@@ -320,8 +320,8 @@
 <li><p><code class="docutils literal notranslate"><span class="pre">total_payment_amount</span></code>: total amount paid (principal and interest) over the loan term.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>: total principal amount repaid.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">total_interest_amount</span></code>: total interest amount repaid.</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">residual_loan_balance</span></code>: residual loan amount balance (which is calculated as <cite>loan_amount</cite> less <cite>total_principal_amount</cite>).</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">repayment_to_principal</span></code>: ratio of total repaid amount to total repaid principal amount (which is calculated as <cite>total_payment_amount</cite> to <cite>total_principal_amount</cite>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">residual_loan_balance</span></code>: residual loan amount balance (which is calculated as <code class="docutils literal notranslate"><span class="pre">loan_amount</span></code> less <code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">repayment_to_principal</span></code>: ratio of total repaid amount to total repaid principal amount (which is calculated as <code class="docutils literal notranslate"><span class="pre">total_payment_amount</span></code> to <code class="docutils literal notranslate"><span class="pre">total_principal_amount</span></code>).</p></li>
 </ul>
 <div class="admonition tip">
 <p class="admonition-title">Tip</p>
@@ -335,7 +335,7 @@
 </div>
 <div class="section" id="interest-rate-compounding">
 <h3>Interest rate compounding<a class="headerlink" href="#interest-rate-compounding" title="Permalink to this headline">¶</a></h3>
-<p>By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the <cite>compounding_method</cite> attribute when defining a loan, which accepts the following day count conventions:</p>
+<p>By default PyLoan is compounding interest rates based on the 30/360 day count method, specifically the so-called 30E/360 method. To change the method use the <code class="docutils literal notranslate"><span class="pre">compounding_method</span></code> attribute when defining a loan, which accepts the following day count conventions:</p>
 <ul class="simple">
 <li><p>30A/360.</p></li>
 <li><p>30U/360.</p></li>
@@ -346,6 +346,21 @@
 <li><p>A/A ISDA (short for Actual/Actual ISDA).</p></li>
 <li><p>A/A AFB (short for Actual/Actual AFB, also known as Actual/Actual Euro).</p></li>
 </ul>
+<div class="admonition tip">
+<p class="admonition-title">Tip</p>
+<p>Certain day count conventions are more advantageous to the borrower while other day count conventions are more advantageous to the lender. Use the method <code class="docutils literal notranslate"><span class="pre">get_loan_summary</span></code> to compare which day count method is the least expensive and which is the most expensive in terms of total interest amount paid over the lifetime of a mortgage/loan.</p>
+<p>Following the examples above, the code block below compares total interest amount paid on a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">day_count_conventions</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;30A/360&#39;</span><span class="p">,</span><span class="s1">&#39;30U/360&#39;</span><span class="p">,</span><span class="s1">&#39;30E/360&#39;</span><span class="p">,</span><span class="s1">&#39;30E/360 ISDA&#39;</span><span class="p">,</span><span class="s1">&#39;A/360&#39;</span><span class="p">,</span><span class="s1">&#39;A/365F&#39;</span><span class="p">,</span><span class="s1">&#39;A/A ISDA&#39;</span><span class="p">,</span><span class="s1">&#39;A/A AFB&#39;</span><span class="p">]</span>
+<span class="n">loan_summary</span><span class="o">=</span><span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:[</span><span class="n">x</span><span class="p">,</span><span class="n">pyloan</span><span class="o">.</span><span class="n">Loan</span><span class="p">(</span><span class="n">loan_amount</span><span class="o">=</span><span class="mi">160000</span><span class="p">,</span><span class="n">interest_rate</span><span class="o">=</span><span class="mf">1.1</span><span class="p">,</span><span class="n">loan_term</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span><span class="n">start_date</span><span class="o">=</span><span class="s1">&#39;2020-06-15&#39;</span><span class="p">,</span><span class="n">compounding_method</span><span class="o">=</span><span class="n">x</span><span class="p">)</span><span class="o">.</span><span class="n">get_loan_summary</span><span class="p">()</span><span class="o">.</span><span class="n">total_interest_amount</span><span class="p">],</span><span class="n">day_count_conventions</span><span class="p">))</span>
+</pre></div>
+</div>
+<p>Results can be summarized in the familiar pandas DataFrame:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan_summary_df</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">loan_summary</span><span class="p">,</span><span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;day_count_method&#39;</span><span class="p">,</span><span class="s1">&#39;total_interest_amount&#39;</span><span class="p">])</span>
+<span class="n">loan_summary_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="n">by</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;total_interest_amount&#39;</span><span class="p">],</span><span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<img alt="Pandas DataFrame comparing day count methods in terms of total interest amount paid" src="_images/day_count_methods.png" />
+</div>
 </div>
 </div>
 <div class="section" id="support">
