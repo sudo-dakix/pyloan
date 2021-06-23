@@ -4,4 +4,4 @@
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
-   configuration: docs/docsrc/conf.py
+   configuration: docs/docsrc/source/conf.py
