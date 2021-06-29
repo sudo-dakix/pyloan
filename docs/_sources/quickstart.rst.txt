@@ -163,3 +163,11 @@ By default PyLoan is compounding interest rates based on the 30/360 day count me
 
    .. image:: _static/day_count_methods.png
       :alt: Pandas DataFrame comparing day count methods in terms of total interest amount paid
+
+Loan/mortgage type
+------------------
+Use the ``Loan`` argument ``loan_type`` to change the type of the loan/mortgage:
+
+* 'annuity' (default): gross monthly costs - principal plus interest - remain fixed during the term of the loan/mortgage.
+* 'linear': net costs - principal - remains fixed during the term of the loan/mortgage. In turn, monthly costs fall during the lifetime of the mortgage.
+* 'interest-only': only interest is paid on the balance of the loan/mortgage.

@@ -99,6 +99,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#interest-only-period">Interest-only period</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#get-loan-summary">Get loan summary</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#interest-rate-compounding">Interest rate compounding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#loan-mortgage-type">Loan/mortgage type</a></li>
 </ul>
 </li>
 </ul>
@@ -316,6 +317,15 @@
 </div>
 <img alt="Pandas DataFrame comparing day count methods in terms of total interest amount paid" src="_images/day_count_methods.png" />
 </div>
+</div>
+<div class="section" id="loan-mortgage-type">
+<h2>Loan/mortgage type<a class="headerlink" href="#loan-mortgage-type" title="Permalink to this headline">¶</a></h2>
+<p>Use the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">loan_type</span></code> to change the type of the loan/mortgage:</p>
+<ul class="simple">
+<li><p>‘annuity’ (default): gross monthly costs - principal plus interest - remain fixed during the term of the loan/mortgage.</p></li>
+<li><p>‘linear’: net costs - principal - remains fixed during the term of the loan/mortgage. In turn, monthly costs fall during the lifetime of the mortgage.</p></li>
+<li><p>‘interest-only’: only interest is paid on the balance of the loan/mortgage.</p></li>
+</ul>
 </div>
 </div>
 

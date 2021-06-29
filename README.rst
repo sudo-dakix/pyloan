@@ -14,16 +14,16 @@ PyLoan is distributed on PyPI and can be installed with `pip`::
 
   $ pip install pyloan
 
-For more information, read the documentation on `installing the package <https://pyloan.readthedocs.io/en/latest/installation.html>`__.
+For more information, read the documentation on `installing the package <https://pyloan.readthedocs.io/en/latest/installation.html>`_.
 
 Quickstart
 ----------
-Read the `Quickstart <https://pyloan.readthedocs.io/en/latest/quickstart.html>`__ guide to see illustrative examples on how to get started using PyLoan to perform mortgage/loan calculations.
+Read the `Quickstart <https://pyloan.readthedocs.io/en/latest/quickstart.html>`_ guide to see illustrative examples on how to get started using PyLoan to perform mortgage/loan calculations.
 
 Support
 -------
-Report bugs via the bug tracker on `GitHub <https://github.com/sudo-dakix/pyloan/issues>`__.
+Report bugs via the bug tracker on `GitHub <https://github.com/sudo-dakix/pyloan/issues>`_.
 
 License
 -------
-PyLoan is licensed under the `MIT License <https://github.com/sudo-dakix/pyloan/blob/master/LICENSE>`__.
+PyLoan is licensed under the `MIT License <https://github.com/sudo-dakix/pyloan/blob/master/LICENSE>`_.
