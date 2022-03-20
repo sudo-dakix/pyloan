@@ -10,9 +10,6 @@ Payment=collections.namedtuple('Payment',['date','payment_amount','interest_amou
 Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
 Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_principal_amount','total_interest_amount','residual_loan_balance','repayment_to_principal'])
 
-# To-do:
-### Actual/Actual
-
 class Loan(object):
 
     def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
