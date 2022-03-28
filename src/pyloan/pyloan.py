@@ -13,22 +13,43 @@ Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment
 class Loan(object):
 
     def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
-        self.loan_amount=Decimal(str(loan_amount))
-        self.interest_rate=Decimal(str(interest_rate/100)).quantize(Decimal(str(0.0001)))
-        self.laon_term=loan_term
-        self.payment_amount=payment_amount
-        self.start_date=dt.datetime.strptime(start_date,'%Y-%m-%d')
-        self.first_payment_date=dt.datetime.strptime(first_payment_date,'%Y-%m-%d') if first_payment_date is not None else None
-        self.payment_end_of_month = payment_end_of_month
-        self.end_date=end_date
-        self.interest_only_period=interest_only_period
-        self.annual_payments=annual_payments
-        self.compounding_method=compounding_method
-        self.loan_type=loan_type
-        self.special_payments=[]
-        self.special_payments_schedule=[]
-        self.no_of_payments=self.laon_term * self.annual_payments
-        self.delta_dt=Decimal(str(12/self.annual_payments))
+        
+        msg = 'hello'
+        try:
+            if type(loan_amount) == int or float:
+                if loan_amount < 0:
+                    raise ValueError('SOME LOAN_AMMOUNT VALUE ERROR MSG')
+            else:
+                raise TypeError('SOME LOAN_AMOUNT TYPE ERROR MSG')
+
+            if type(interest_rate) == int or float:
+                if interest_rate < 0:
+                    raise ValueError('SOME interest_rate VALUE ERROR MSG')
+            else:
+                raise TypeError('SOME interest_rate TYPE ERROR MSG')
+        
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
+
+            self.loan_amount=Decimal(str(loan_amount))
+            self.interest_rate=Decimal(str(interest_rate/100)).quantize(Decimal(str(0.0001)))
+            self.laon_term=loan_term
+            self.payment_amount=payment_amount
+            self.start_date=dt.datetime.strptime(start_date,'%Y-%m-%d')
+            self.first_payment_date=dt.datetime.strptime(first_payment_date,'%Y-%m-%d') if first_payment_date is not None else None
+            self.payment_end_of_month = payment_end_of_month
+            self.end_date=end_date
+            self.interest_only_period=interest_only_period
+            self.annual_payments=annual_payments
+            self.compounding_method=compounding_method
+            self.loan_type=loan_type
+            self.special_payments=[]
+            self.special_payments_schedule=[]
+            self.no_of_payments=self.laon_term * self.annual_payments
+            self.delta_dt=Decimal(str(12/self.annual_payments))
 
     @staticmethod
     def _quantize(amount):
