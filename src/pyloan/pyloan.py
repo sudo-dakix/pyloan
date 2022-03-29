@@ -14,30 +14,84 @@ class Loan(object):
 
     def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
         
-        msg = 'hello'
+        '''
+        Input validtion for attribute loan_amount
+        '''
         try:
-            if type(loan_amount) == int or float:
+            if type(loan_amount) == int or type(loan_amount) == float:
                 if loan_amount < 0:
-                    raise ValueError('SOME LOAN_AMMOUNT VALUE ERROR MSG')
+                    raise ValueError('Variable LOAN_AMMOUNT can only be non-negative.')
             else:
-                raise TypeError('SOME LOAN_AMOUNT TYPE ERROR MSG')
+                raise TypeError('Variable LOAN_AMOUNT can only be of type integer or float, both non-negative.')
 
-            if type(interest_rate) == int or float:
-                if interest_rate < 0:
-                    raise ValueError('SOME interest_rate VALUE ERROR MSG')
-            else:
-                raise TypeError('SOME interest_rate TYPE ERROR MSG')
-        
+        # handle exceptions for loan_amount
         except ValueError as val_e:
             print(val_e)
         except TypeError as typ_e:
             print(typ_e)
-        else:
 
+        else:
             self.loan_amount=Decimal(str(loan_amount))
+
+        '''
+        Input validation for attribute interet_rate
+        '''
+        try:
+            if type(interest_rate) == int or type(interest_rate) == float:
+                if interest_rate < 0:
+                    raise ValueError('Variable INTEREST_RATE can only be non-negative.')
+            else:
+                raise TypeError('Variable INTEREST_RATE can only be of type integer or float, both non-negative.')
+
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        
+        else:
             self.interest_rate=Decimal(str(interest_rate/100)).quantize(Decimal(str(0.0001)))
+        
+        '''
+        Input validation for attribute loan_term
+        '''
+        try:
+            if type(loan_term) == int:
+                if loan_term < 1:
+                    raise ValueError('Variable LOAN_TERM can only be integers greater or equal to 1.')
+            else:
+                raise TypeError('Variable LOAN_TERM can only be of type integer.')
+
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+
+        else:
             self.laon_term=loan_term
+            
+        '''
+        Input validation for attribute payment_amount
+        '''
+        try:
+            if payment_amount is None:
+                pass
+            elif payment_amount is not None and (type(payment_amount) == int or type(payment_amount) == float):
+                if payment_amount < 0:
+                    raise ValueError('Variable PAYMENT_AMOUNT can only be non-negative.')
+            else:
+                raise TypeError('Variable PAYMENT_AMOUNT can only be of type integer or float, both non-negative.')
+            
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+
+        else:
             self.payment_amount=payment_amount
+            
+
+
+
             self.start_date=dt.datetime.strptime(start_date,'%Y-%m-%d')
             self.first_payment_date=dt.datetime.strptime(first_payment_date,'%Y-%m-%d') if first_payment_date is not None else None
             self.payment_end_of_month = payment_end_of_month
