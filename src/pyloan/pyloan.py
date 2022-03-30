@@ -12,7 +12,7 @@ Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment
 
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,end_date=False,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
+    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
         
         '''
         Input validtion for attribute loan_amount
@@ -89,21 +89,71 @@ class Loan(object):
         else:
             self.payment_amount=payment_amount
             
-
-
-
+        '''
+        Input validation for attribute start_date
+        '''
+        try:
+            if start_date is None:
+                raise TypeError('Varable START_DATE must by of type date with format YYYY-MM-DD')
+            elif bool(dt.datetime.strptime(start_date,'%Y-%m-%d')) is False:
+                raise ValueError 
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
             self.start_date=dt.datetime.strptime(start_date,'%Y-%m-%d')
+            
+        '''
+        Input validation for attribute first_paymnt_date
+        '''
+        try:
+            if first_payment_date is None:
+                pass
+            elif bool(dt.datetime.strptime(first_payment_date,'%Y-%m-%d')) is False:
+                raise ValueError
+
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
             self.first_payment_date=dt.datetime.strptime(first_payment_date,'%Y-%m-%d') if first_payment_date is not None else None
+
+            try:
+                if self.first_payment_date is None:
+                    pass
+                elif self.start_date > self.first_payment_date:
+                    raise ValueError('FIRST_PAYMENT_DATE cannot be before START_DATE')
+
+            except ValueError as val_e:
+                print(val_e)
+
+        '''
+        Input validation for attribute payment_end_of_month
+        '''
+        try:
+            if type(payment_end_of_month) is not bool:
+                raise TypeError('Variable PAYMENT_END_OF_MONTH can only be of type boolean (either True or False)')
+
+        except TypeError as typ_e:
+            print(typ_e)
+
+        else:
             self.payment_end_of_month = payment_end_of_month
-            self.end_date=end_date
-            self.interest_only_period=interest_only_period
-            self.annual_payments=annual_payments
-            self.compounding_method=compounding_method
-            self.loan_type=loan_type
-            self.special_payments=[]
-            self.special_payments_schedule=[]
-            self.no_of_payments=self.laon_term * self.annual_payments
-            self.delta_dt=Decimal(str(12/self.annual_payments))
+        
+        
+
+        self.interest_only_period=interest_only_period
+        self.annual_payments=annual_payments
+        self.compounding_method=compounding_method
+        self.loan_type=loan_type
+
+        # define non-input variables
+        self.special_payments=[]
+        self.special_payments_schedule=[]
+        self.no_of_payments=self.laon_term * self.annual_payments
+        self.delta_dt=Decimal(str(12/self.annual_payments))
 
     @staticmethod
     def _quantize(amount):
