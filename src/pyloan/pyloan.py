@@ -12,7 +12,7 @@ Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment
 
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,interest_only_period=0,annual_payments=12,compounding_method='30E/360',loan_type='annuity'):
+    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,annual_payments=12,interest_only_period=0,compounding_method='30E/360',loan_type='annuity'):
         
         '''
         Input validtion for attribute loan_amount
@@ -142,18 +142,41 @@ class Loan(object):
         else:
             self.payment_end_of_month = payment_end_of_month
         
+        '''
+        Input validation for attribute annual_payments
+        '''
+        try:
+            if type(annual_payments) == int:
+                if annual_payments not in [12,4,2,1]:
+                    raise ValueError('Attribute ANNUAL_PAYMENTS must be either set to 12, 4, 2 or 1.')
+            else:
+                raise TypeError('Attribute ANNUAL_PAYMENTS must be of type integer.')
         
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
+            self.annual_payments=annual_payments
 
         self.interest_only_period=interest_only_period
-        self.annual_payments=annual_payments
         self.compounding_method=compounding_method
         self.loan_type=loan_type
 
         # define non-input variables
         self.special_payments=[]
         self.special_payments_schedule=[]
-        self.no_of_payments=self.laon_term * self.annual_payments
-        self.delta_dt=Decimal(str(12/self.annual_payments))
+
+        try:
+            if hasattr(self,'loan_term') is False or hasattr(self,'annual_payments') is False:
+                raise ValueError('Please make sure that LOAN_TERM and/or ANNUAL_PAYMENTS were correctly defined')
+
+        except ValueError as val_e:
+            print(val_e)
+        
+        else:
+            self.no_of_payments=self.laon_term * self.annual_payments
+            self.delta_dt=Decimal(str(12/self.annual_payments))
 
     @staticmethod
     def _quantize(amount):
