@@ -159,9 +159,42 @@ class Loan(object):
         else:
             self.annual_payments=annual_payments
 
+        
         self.interest_only_period=interest_only_period
-        self.compounding_method=compounding_method
-        self.loan_type=loan_type
+
+        '''
+        Input validation for attribute compounding_method
+        '''
+        try:
+            if type(compounding_method) == str:
+                if compounding_method not in ['30A/360','30U/360','30E/360','30E/360 ISDA','A/360','A/365F','A/A ISDA', 'A/A AFB']:
+                    raise ValueError('Attribute COMPOUNDING_METHOD must be set to one of the following: 30A/360, 30U/360, 30E/360, 30E/360 ISDA, A/360, A/365F, A/A ISDA, A/A AFB.')
+            else:
+                raise TypeError('Attribute COMPOUNDING_METHOD must be of type string')
+
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
+            self.compounding_method=compounding_method
+
+        '''
+        Input validation for attribute loan_type
+        '''
+        try:
+            if type(loan_type) == str:
+                if loan_type not in ['annuity','linear','interest-only']:
+                    raise ValueError('Attribute LOAN_TYPE must be either set to annuity or linear or interest-only.')
+            else:
+                raise TypeError('Attribute LOAN_TYPE must be of type string')
+
+        except ValueError as val_e:
+            print(val_e)
+        except TypeError as typ_e:
+            print(typ_e)
+        else:
+            self.loan_type=loan_type
 
         # define non-input variables
         self.special_payments=[]
