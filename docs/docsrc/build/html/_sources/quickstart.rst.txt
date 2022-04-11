@@ -14,6 +14,25 @@ Next define a loan::
 
 The above defines a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020. By default, monthly payment amount will be calculated to amortize the loan amount fully over the given loan term. Also, by default, monthly payments fall on the last day of the month.
 
+Loan arguments
+~~~~~~~~~~~~~~
+The loan has the following **required arguments**:
+
+* ``loan_amount``: the amount of money being borrowed. Input must be greater than zero.
+* ``interest_rate``: the annual interest paid on the loan/mortgage. Input must be greater than zero.
+* ``loan_term``: the number of years of the loan/mortgage. Input must be an integer greater or equal than 1-year.
+* ``start_date``: the date as of which the loan/mortgage begins. Input format must be YYYY-MM-DD.
+
+In addition, the loan has the following **optional argument**:
+
+* ``payment_amount``: the amount used to repay loan/interest. Default value is None. When the value is set to other than None, the specified amount will be used to cover interest and principal repayments.
+* ``first_payment_date``: the date as at which first payment on the loan/mortget is made. Input format must be YYYY-MM-DD and greater than the start date. Default value is None.
+* ``payment_end_of_month``: boolean argument that defines whether loan/mortgage repayments fall on month-end or not. Default value is True. If set to False, and ``first_payment_date`` is None then loan/mortgage payments will fall on the day specified in the ``start_date``.
+* ``annual_payments``: the number of annual payments on the loan/mortgage. The argument can be set to either 12 (monthly), 4 (quarterly), 2 (semi-annual), and 1 (annual). The default value is 12 (monthly).
+* ``interest_only_period``: the number of interest-only payments on the loan/mortgage. The default value is 0.
+* ``compounding_method``: the compounding method used to accrue interest on the loan/mortgage. The default value is '30E/360', otherwise known 30/360 German (or 30E/360 ISDA). For more details on other alternatives, see :ref:`Section on interest rate compounding`.
+* ``loan_type``: type of laon/mortgage. Default value is annuity. Alternative values are: linear and interest-only. 
+
 Get payment schedule
 --------------------
 To view the payment schedule and loan amortization use the ``get_payment_schedule`` method::
@@ -41,6 +60,8 @@ The first row represents the loan start with the 'loan_balance_column' equal to 
 
    .. image:: _static/pandas_df_output.png
       :alt: Pandas DataFrame output of the payment schedule
+
+.. _Section on payment amount:
 
 Specify payment amount
 ----------------------
@@ -134,6 +155,8 @@ The above outputs a list of named tuples with the following fields per row:
 
    .. image:: _static/loan_summary.png
       :alt: Pandas DataFrame output of the loan summary
+
+.. _Section on interest rate compounding:
 
 Interest rate compounding
 -------------------------
