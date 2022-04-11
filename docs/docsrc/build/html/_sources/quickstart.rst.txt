@@ -14,6 +14,24 @@ Next define a loan::
 
 The above defines a 10-year mortgage/loan of 160,000 EUR with annual interest of 1.1% starting on the 15th of June 2020. By default, monthly payment amount will be calculated to amortize the loan amount fully over the given loan term. Also, by default, monthly payments fall on the last day of the month.
 
+Loan arguments
+~~~~~~~~~~~~~~
+The class Loan has the following arguments:
+
+* ``loan_amount``: the amount of money being borrowed. Input must be greater than zero.
+* ``interest_rate``: the annual interest paid on the loan. Input must be greater than zero.
+* ``loan_term``: the number of years 
+* ``start_date``: OPEN.
+* ``first_payment_date``: OPEN.
+* ``payment_end_of_month``: OPEN.
+* ``annual_payments``: OPEN.
+* ``no_of_payments``: OPEN.
+* ``delta_dt``: OPEN.
+* ``interest_only_period``: OPEN.
+* ``compounding_method``: OPEN.
+* ``special_payments``: OPEN.
+* ``special_payments_schedule``: OPEN.
+
 Get payment schedule
 --------------------
 To view the payment schedule and loan amortization use the ``get_payment_schedule`` method::
