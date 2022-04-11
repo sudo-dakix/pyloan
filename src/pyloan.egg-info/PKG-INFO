@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: pyloan
-Version: 0.3.3
+Version: 0.3.4
 Summary: A package for mortgage/loan calculations.
 Home-page: https://github.com/sudo-dakix/pyloan
 Author: Da.Ki.X
@@ -12,7 +12,7 @@ Classifier: Programming Language :: Python :: 3
 Classifier: License :: OSI Approved :: MIT License
 Classifier: Operating System :: OS Independent
 Requires-Python: >=3.6
-Description-Content-Type: text/markdown
+Description-Content-Type: text/x-rst
 License-File: LICENSE
 
 Welcome to PyLoan!
