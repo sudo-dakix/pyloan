@@ -168,10 +168,14 @@
 <p>In the examples above, payments were made on month end. It is possible to change this to a particular day of the month by setting of the <code class="docutils literal notranslate"><span class="pre">Loan</span></code> argument <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> to a particular date. This will make the first and all subsequent payments fall on the specified day of the <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> argument.</p>
 <p>Following the example above, make first payment fall on the 17th of September. Each subsequent payment will fall on the 17th day of the month on which the payment is due.</p>
 <img alt="Specify payment date other than month end date." src="_images/first_payment_date.png" />
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When attribute <code class="docutils literal notranslate"><span class="pre">first_payment_date</span></code> is set, then attribute  <code class="docutils literal notranslate"><span class="pre">payment_end_of_month</span></code> will be ignored.</p>
+</div>
 </section>
 <section id="add-special-payments">
 <h2>Add special payments<a class="headerlink" href="#add-special-payments" title="Permalink to this headline"></a></h2>
-<p>To add special payments to the loan, use the <cite>add_special_payment</cite> method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually:</p>
+<p>To add special payments to the loan, use the <code class="docutils literal notranslate"><span class="pre">add_special_payment</span></code> method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">loan</span><span class="o">.</span><span class="n">add_special_payment</span><span class="p">(</span><span class="n">payment_amount</span><span class="o">=</span><span class="mi">5000</span><span class="p">,</span><span class="n">first_payment_date</span><span class="o">=</span><span class="s1">&#39;2021-03-17&#39;</span><span class="p">,</span><span class="n">special_payment_term</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">annual_payments</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
