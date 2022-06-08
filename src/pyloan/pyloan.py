@@ -323,6 +323,7 @@ class Loan(object):
         no_of_payments=special_payment.special_payment_term * special_payment.annual_payments
         annual_payments = special_payment.annual_payments
         dt0=dt.datetime.strptime(special_payment.first_payment_date,'%Y-%m-%d')
+        
         special_payment_amount=self._quantize(special_payment.payment_amount)
         initial_special_payment=Payment(date=dt0,payment_amount=self._quantize(0),interest_amount=self._quantize(0),principal_amount=self._quantize(0),special_principal_amount=special_payment_amount,total_principal_amount=self._quantize(0),loan_balance_amount=self._quantize(0))
         special_payment_schedule=[initial_special_payment]
@@ -383,7 +384,7 @@ class Loan(object):
                 else:
                     dt0 = self.start_date
             else:
-                dt0=self.first_payment_date+relativedelta(months=-12/self.annual_payments)
+                dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-12/self.annual_payments)
 
             # take care of special payments
             special_payments_schedule_raw=[]
