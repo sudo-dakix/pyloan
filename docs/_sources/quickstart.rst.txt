@@ -95,9 +95,12 @@ Following the example above, make first payment fall on the 17th of September. E
 .. image:: _static/first_payment_date.png
    :alt: Specify payment date other than month end date.
 
+.. note::
+   When attribute ``first_payment_date`` is set, then attribute  ``payment_end_of_month`` will be ignored.
+
 Add special payments
 ====================
-To add special payments to the loan, use the `add_special_payment` method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually::
+To add special payments to the loan, use the ``add_special_payment`` method. For instance, following the example above, add special payment of 5000 EUR first paid on 2021-03-15 for next 8 years paid annually::
 
   loan.add_special_payment(payment_amount=5000,first_payment_date='2021-03-17',special_payment_term=8,annual_payments=1)
 
