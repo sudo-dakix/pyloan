@@ -23,7 +23,7 @@ Pull Request
 ============
 When you are done with the changes, create a pull request.
 
-* Fill the "Read for Review" template so that we can review your pull request. This template helps reviewers understand your changes as well as the purpose of your pull request.
+* Fill the "Ready for Review" template so that we can review your pull request. This template helps reviewers understand your changes as well as the purpose of your pull request.
 * Do not forget to link pull requst to issue if you are solving one.
 * Enable the checkbox to allow maintainer edits so the branch can be updated for a merge. Once you submit your pull request, we will review your proposal, We may ask questions or request for additional information.
 * We may ask for changes to be made fore a pull request can be merged, either using suggested changes or pull request comments.
