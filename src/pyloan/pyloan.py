@@ -12,7 +12,7 @@ Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment
 
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,annual_payments=12,interest_only_period=0,compounding_method='30E/360',loan_type='annuity'):
+    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,annual_payments=12,interest_only_period=0,loan_term_period='M',compounding_method='30E/360',loan_type='annuity'):
         
         '''
         Input validtion for attribute loan_amount
@@ -164,9 +164,7 @@ class Loan(object):
         '''
         try:
             if hasattr(self,'loan_term') is False or hasattr(self,'annual_payments') is False:
-                print(self.loan_term)
-                print(self.annual_payments)
-                raise ValueError('Please make sure that LOAN_TERM and/or ANNUAL_PAYMENTS were correctly defined.11')
+                raise ValueError('Please make sure that LOAN_TERM and/or ANNUAL_PAYMENTS were correctly defined.')
 
         except ValueError as val_e:
             print(val_e)
@@ -371,8 +369,8 @@ class Loan(object):
                     regular_principal_payment_amount=self.payment_amount
 
             if self.loan_type == 'interest-only':
-                    regular_principal_payment_amount=0
-                    interest_only_period = self.no_of_payments
+                regular_principal_payment_amount=0
+                interest_only_period = self.no_of_payments
 
 
             if self.first_payment_date is None:
@@ -380,11 +378,13 @@ class Loan(object):
                     if self.start_date.day == cal.monthrange(self.start_date.year,self.start_date.month)[1]:
                         dt0 = self.start_date
                     else:
-                        dt0 = dt.datetime(self.start_date.year,self.start_date.month,cal.monthrange(self.start_date.year,self.start_date.month)[1],0,0)+relativedelta(months=-12/self.annual_payments)
+                        #dt0 = dt.datetime(self.start_date.year,self.start_date.month,cal.monthrange(self.start_date.year,self.start_date.month)[1],0,0)+relativedelta(months=-12/self.annual_payments)
+                        dt0 = dt.datetime(self.start_date.year,self.start_date.month,cal.monthrange(self.start_date.year,self.start_date.month)[1],0,0)+relativedelta(months=-self.delta_dt)
                 else:
                     dt0 = self.start_date
             else:
-                dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-12/self.annual_payments)
+                #dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-12/self.annual_payments)
+                dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-self.delta_dt)
 
             # take care of special payments
             special_payments_schedule_raw=[]
@@ -408,7 +408,7 @@ class Loan(object):
             m=0
             for i in range(1,self.no_of_payments+1):
 
-                date=dt0+relativedelta(months=i*12/self.annual_payments)
+                date=dt0+relativedelta(months=i*self.delta_dt)
                 if self.payment_end_of_month==True and self.first_payment_date is None:
                     eom_day=cal.monthrange(date.year,date.month)[1]
                     date=date.replace(day=eom_day)#dt.datetime(date.year,date.month,eom_day)
