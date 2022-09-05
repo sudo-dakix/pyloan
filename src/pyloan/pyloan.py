@@ -10,10 +10,12 @@ Payment=collections.namedtuple('Payment',['date','payment_amount','interest_amou
 Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
 Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_principal_amount','total_interest_amount','residual_loan_balance','repayment_to_principal'])
 
+LOAN_TERM_PERIOD_CONFIG = {'Y':{'base':'months','multiple':12},'Q':{'base':'months','multiple':3},'M':{'base':'months','multiple':1}}
+
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,annual_payments=12,interest_only_period=0,loan_term_period='M',compounding_method='30E/360',loan_type='annuity'):
-        
+    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,payment_day=1,annual_payments=12,interest_only_period=0,loan_term_period='M',compounding_method='30E/360',loan_type='annuity'):
+
         '''
         Input validtion for attribute loan_amount
         '''
@@ -233,9 +235,27 @@ class Loan(object):
         self.special_payments=[]
         self.special_payments_schedule=[]
 
+        self.loan_term_period = loan_term_period
+        self.payment_day = payment_day
+
+
     @staticmethod
     def _quantize(amount):
         return Decimal(str(amount)).quantize(Decimal(str(0.01)))
+
+
+    def get_payment_dates(self):
+        base = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period]['base']
+        multiple = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period]['multiple']
+        loan_term = self.loan_term
+        no_of_payments = multiple * loan_term + 1
+        dt_arr = [self.start_date]
+
+        if self.first_payment_date is not None:
+            dt_arr.append(self.first_payment_date)
+
+        return dt_arr
+
 
     @staticmethod
     def _get_day_count(dt1,dt2,method,eom=False):
@@ -383,6 +403,7 @@ class Loan(object):
                 else:
                     dt0 = self.start_date
             else:
+
                 #dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-12/self.annual_payments)
                 dt0=max(self.first_payment_date,self.start_date)+relativedelta(months=-self.delta_dt)
 
@@ -409,9 +430,13 @@ class Loan(object):
             for i in range(1,self.no_of_payments+1):
 
                 date=dt0+relativedelta(months=i*self.delta_dt)
-                if self.payment_end_of_month==True and self.first_payment_date is None:
+                if i == 1:
+                    date=max(date,self.first_payment_date)
+
+                # TO-DO: add logic to take care of the first_payment_date is NOT None and payment_end_of_month is True
+                if (self.payment_end_of_month==True and self.first_payment_date is None) or (self.payment_end_of_month == True and self.first_payment_date is not None and i > 1):
                     eom_day=cal.monthrange(date.year,date.month)[1]
-                    date=date.replace(day=eom_day)#dt.datetime(date.year,date.month,eom_day)
+                    date=date.replace(day=eom_day)
 
                 special_principal_amount= self._quantize(0)
                 bop_date = payment_schedule[(i+m)-1].date
