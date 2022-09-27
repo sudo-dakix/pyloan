@@ -10,7 +10,10 @@ Payment=collections.namedtuple('Payment',['date','payment_amount','interest_amou
 Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
 Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_principal_amount','total_interest_amount','residual_loan_balance','repayment_to_principal'])
 
-LOAN_TERM_PERIOD_CONFIG = {'Y':{'base':'months','multiple':12},'Q':{'base':'months','multiple':3},'M':{'base':'months','multiple':1}}
+'''
+This constant variable is used to control mapping of laon term in terms of Y(ears), Q(quarters) and M(onths).
+'''
+LOAN_TERM_PERIOD_CONFIG = {'Y':{'months':12},'Q':{'months':3},'M':{'months':1}}
 
 class Loan(object):
 
@@ -243,18 +246,42 @@ class Loan(object):
     def _quantize(amount):
         return Decimal(str(amount)).quantize(Decimal(str(0.01)))
 
+    @staticmethod
+    def _set_date_eom(date):
+        eom_day=cal.monthrange(date.year,date.month)[1]
+        eom_date=date.replace(day=eom_day)
+        return eom_date
 
     def get_payment_dates(self):
-        base = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period]['base']
-        multiple = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period]['multiple']
         loan_term = self.loan_term
-        no_of_payments = multiple * loan_term + 1
-        dt_arr = [self.start_date]
+        args = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period].copy()
 
-        if self.first_payment_date is not None:
-            dt_arr.append(self.first_payment_date)
+        # set date array, first entry is equal to the start date
+        date_arr = [self.start_date]
+        
+        if self.first_payment_date is None:
+            bop_date = self.start_date + relativedelta(**args)
+            if self.payment_end_of_month is True:
+                bop_date = self._set_date_eom(bop_date)
+        else:
+            bop_date = self.first_payment_date
+        
+        # set second entry equal to the bop_date, this is the first payment date upon which subsequent payments as per loan term will be set
+        date_arr.append(bop_date)
 
-        return dt_arr
+        # update the arguments to generate the date array
+        #args.update((x , y*loan_term) for x, y in args.items())
+        rel_dt_key = list(args.keys())[0]
+        rel_dt_mul = list(args.values())[0]
+        for i in range(1,self.loan_term):
+            #args.update((x, i) for x, y in args.items())
+            bop_date = bop_date + relativedelta(**args)
+            if self.payment_end_of_month is True:
+                bop_date = self._set_date_eom(bop_date)
+            date_arr.append(bop_date)
+            
+
+        return date_arr
 
 
     @staticmethod
@@ -427,8 +454,14 @@ class Loan(object):
 
             # calculate payment schedule
             m=0
-            for i in range(1,self.no_of_payments+1):
+            date_array = self.get_payment_dates()
 
+            for i in range(1,len(date_array)):
+                date = date_array[i]
+
+            #for i in range(1,self.no_of_payments+1):
+
+                '''
                 date=dt0+relativedelta(months=i*self.delta_dt)
                 if i == 1:
                     date=max(date,self.first_payment_date)
@@ -437,6 +470,9 @@ class Loan(object):
                 if (self.payment_end_of_month==True and self.first_payment_date is None) or (self.payment_end_of_month == True and self.first_payment_date is not None and i > 1):
                     eom_day=cal.monthrange(date.year,date.month)[1]
                     date=date.replace(day=eom_day)
+                '''
+
+                
 
                 special_principal_amount= self._quantize(0)
                 bop_date = payment_schedule[(i+m)-1].date
