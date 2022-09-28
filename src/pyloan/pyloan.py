@@ -13,11 +13,11 @@ Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment
 '''
 This constant variable is used to control mapping of laon term in terms of Y(ears), Q(quarters) and M(onths).
 '''
-LOAN_TERM_PERIOD_CONFIG = {'Y':{'months':12},'Q':{'months':3},'M':{'months':1}}
+LOAN_TERM_PERIOD_CONFIG = {'Y':{'months':12,'annual_payments':1},'BY':{'months':6,'annual_payments':2},'Q':{'months':3,'annual_payments':4},'M':{'months':1,'annual_payments':12}}
 
 class Loan(object):
 
-    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,payment_day=1,annual_payments=12,interest_only_period=0,loan_term_period='M',compounding_method='30E/360',loan_type='annuity'):
+    def __init__(self,loan_amount,interest_rate,loan_term,start_date,payment_amount=None,first_payment_date=None,payment_end_of_month=True,annual_payments=12,interest_only_period=0,loan_term_period='M',compounding_method='30E/360',loan_type='annuity'):
 
         '''
         Input validtion for attribute loan_amount
@@ -239,7 +239,7 @@ class Loan(object):
         self.special_payments_schedule=[]
 
         self.loan_term_period = loan_term_period
-        self.payment_day = payment_day
+        #self.payment_day = payment_day
 
 
     @staticmethod
@@ -251,16 +251,18 @@ class Loan(object):
         eom_day=cal.monthrange(date.year,date.month)[1]
         eom_date=date.replace(day=eom_day)
         return eom_date
-
-    def get_payment_dates(self):
+    
+    @staticmethod
+    def _get_payment_dates(self):
         loan_term = self.loan_term
         args = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period].copy()
+        dt = dict((k, args[k]) for k in ['months'] if k in args)
 
         # set date array, first entry is equal to the start date
         date_arr = [self.start_date]
         
         if self.first_payment_date is None:
-            bop_date = self.start_date + relativedelta(**args)
+            bop_date = self.start_date + relativedelta(**dt)
             if self.payment_end_of_month is True:
                 bop_date = self._set_date_eom(bop_date)
         else:
@@ -270,17 +272,12 @@ class Loan(object):
         date_arr.append(bop_date)
 
         # update the arguments to generate the date array
-        #args.update((x , y*loan_term) for x, y in args.items())
-        rel_dt_key = list(args.keys())[0]
-        rel_dt_mul = list(args.values())[0]
         for i in range(1,self.loan_term):
-            #args.update((x, i) for x, y in args.items())
-            bop_date = bop_date + relativedelta(**args)
+            bop_date = bop_date + relativedelta(**dt)
             if self.payment_end_of_month is True:
                 bop_date = self._set_date_eom(bop_date)
             date_arr.append(bop_date)
             
-
         return date_arr
 
 
@@ -402,22 +399,27 @@ class Loan(object):
             payment_schedule=[initial_payment]
             interest_only_period = self.interest_only_period
 
+            # relevant argments
+            args = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period].copy()
+            self.annual_payments = args['annual_payments']
+
             # take care of loan type
             if self.loan_type == 'annuity':
                 if self.payment_amount is None:
-                    regular_principal_payment_amount= self.loan_amount*((self.interest_rate/self.annual_payments)*(1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-interest_only_period)))/((1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-interest_only_period))-1)
+                    #regular_principal_payment_amount= self.loan_amount*((self.interest_rate/self.annual_payments)*(1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-interest_only_period)))/((1+(self.interest_rate/self.annual_payments))**((self.no_of_payments-interest_only_period))-1)
+                    regular_principal_payment_amount= self.loan_amount*((self.interest_rate/self.annual_payments)*(1+(self.interest_rate/self.annual_payments))**((self.loan_term-interest_only_period)))/((1+(self.interest_rate/self.annual_payments))**((self.loan_term-interest_only_period))-1)
                 else:
                     regular_principal_payment_amount=self.payment_amount
 
             if self.loan_type == 'linear':
                 if self.payment_amount is None:
-                    regular_principal_payment_amount= self.loan_amount / (self.no_of_payments-self.interest_only_period)
+                    regular_principal_payment_amount= self.loan_amount / (self.loan_term-self.interest_only_period)
                 else:
                     regular_principal_payment_amount=self.payment_amount
 
             if self.loan_type == 'interest-only':
                 regular_principal_payment_amount=0
-                interest_only_period = self.no_of_payments
+                interest_only_period = self.loan_term
 
 
             if self.first_payment_date is None:
@@ -454,25 +456,10 @@ class Loan(object):
 
             # calculate payment schedule
             m=0
-            date_array = self.get_payment_dates()
+            date_array = self._get_payment_dates(self)
 
             for i in range(1,len(date_array)):
                 date = date_array[i]
-
-            #for i in range(1,self.no_of_payments+1):
-
-                '''
-                date=dt0+relativedelta(months=i*self.delta_dt)
-                if i == 1:
-                    date=max(date,self.first_payment_date)
-
-                # TO-DO: add logic to take care of the first_payment_date is NOT None and payment_end_of_month is True
-                if (self.payment_end_of_month==True and self.first_payment_date is None) or (self.payment_end_of_month == True and self.first_payment_date is not None and i > 1):
-                    eom_day=cal.monthrange(date.year,date.month)[1]
-                    date=date.replace(day=eom_day)
-                '''
-
-                
 
                 special_principal_amount= self._quantize(0)
                 bop_date = payment_schedule[(i+m)-1].date
