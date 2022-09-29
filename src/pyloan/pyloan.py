@@ -506,6 +506,17 @@ class Loan(object):
         self.special_payments.append(special_payment)
         self.special_payments_schedule.append(self._get_special_payment_schedule(self,special_payment))
 
+    def list_special_payments(self):
+        return self.special_payments
+
+    def remove_special_payment(self,elem):
+        
+        sp = self.special_payments[elem]
+        sps = self.special_payments_schedule[elem]
+
+        self.special_payments.remove(sp)
+        self.special_payments_schedule.remove(sps)
+
     def get_loan_summary(self):
         payment_schedule=self.get_payment_schedule()
         total_payment_amount=0
