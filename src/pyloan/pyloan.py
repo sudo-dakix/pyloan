@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 Payment=collections.namedtuple('Payment',['date','payment_amount','interest_amount','principal_amount','special_principal_amount','total_principal_amount','loan_balance_amount'])
 
-Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','annual_payments'])
+Special_Payment=collections.namedtuple('Special_Payment',['payment_amount','first_payment_date','special_payment_term','special_payment_term_period'])
 Loan_Summary=collections.namedtuple('Loan_Summary',['loan_amount','total_payment_amount','total_principal_amount','total_interest_amount','residual_loan_balance','repayment_to_principal'])
 
 '''
@@ -254,7 +254,6 @@ class Loan(object):
     
     @staticmethod
     def _get_payment_dates(self):
-        loan_term = self.loan_term
         args = LOAN_TERM_PERIOD_CONFIG[self.loan_term_period].copy()
         dt = dict((k, args[k]) for k in ['months'] if k in args)
 
@@ -362,8 +361,10 @@ class Loan(object):
 
     @staticmethod
     def _get_special_payment_schedule(self,special_payment):
-        no_of_payments=special_payment.special_payment_term * special_payment.annual_payments
-        annual_payments = special_payment.annual_payments
+        args = LOAN_TERM_PERIOD_CONFIG[special_payment.special_payment_term_period].copy()
+        annual_payments = args['annual_payments']
+        no_of_payments=special_payment.special_payment_term * annual_payments
+
         dt0=dt.datetime.strptime(special_payment.first_payment_date,'%Y-%m-%d')
         
         special_payment_amount=self._quantize(special_payment.payment_amount)
@@ -500,8 +501,8 @@ class Loan(object):
 
             return payment_schedule
 
-    def add_special_payment(self,payment_amount,first_payment_date,special_payment_term,annual_payments):
-        special_payment=Special_Payment(payment_amount=payment_amount,first_payment_date=first_payment_date,special_payment_term=special_payment_term,annual_payments=annual_payments)
+    def add_special_payment(self,payment_amount,first_payment_date,special_payment_term,special_payment_term_period='Y'):
+        special_payment=Special_Payment(payment_amount=payment_amount,first_payment_date=first_payment_date,special_payment_term=special_payment_term,special_payment_term_period=special_payment_term_period)
         self.special_payments.append(special_payment)
         self.special_payments_schedule.append(self._get_special_payment_schedule(self,special_payment))
 
